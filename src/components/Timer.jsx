@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Locations from "./Locations";
 
 const Timer = () => {
   const [time, setTime] = useState(0);
@@ -7,6 +8,8 @@ const Timer = () => {
   const [endTime, setEndTime] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [startDateTime, setStartDateTime] = useState(null);
+  const [endDateTime, setEndDateTime] = useState(null);
   const [activity, setActivity] = useState("");
 
   const [eventState, setEventState] = useState("start");
@@ -31,14 +34,12 @@ const Timer = () => {
   const timerFormat = (time) => {
     let hour = Math.floor(time / 60 / 60) % 24;
     let minute = Math.floor(time / 60) % 60;
-    let second = time % 60;
+    let second = Math.floor(time % 60);
 
     return formatter(hour, minute, second, "timer");
   };
 
-  const timeFormat = () => {
-    const today = new Date();
-
+  const timeFormat = (today) => {
     const s = today.getSeconds();
     const m = today.getMinutes();
     const h = today.getHours();
@@ -61,8 +62,7 @@ const Timer = () => {
     "Des",
   ];
 
-  const dateFormat = () => {
-    const today = new Date();
+  const dateFormat = (today) => {
     const day = today.getDate();
     const month = months[today.getMonth()];
     const year = today.getFullYear() % 100;
@@ -80,13 +80,18 @@ const Timer = () => {
     setActivity("");
   };
 
+  const submitTime = (e) => {
+    e.preventDefault();
+    const newData = {};
+  };
+
   const buttonBlue = "bg-[#2EBED9] w-40 py-3 rounded-xl text-white";
   const buttonWhite = "bg-white w-40 py-3 rounded-xl text-[#A7A6C5]";
 
   return (
     <>
       <section>
-        <div className="flex flex-col items-center">
+        <form className="flex flex-col items-center" onSubmit={submitTime}>
           <div className="flex flex-col items-center">
             <span className="text-white text-3xl font-semibold mb-40">
               Timer
@@ -117,12 +122,12 @@ const Timer = () => {
           </div>
 
           {/* Location */}
-          <div className="relative">
-            <div className="absolute"></div>
+          <div className="w-[350px] h-13 flex flex-col items-center justify-center bg-[#434B8C] rounded-xl shadow-md p-4 mb-10">
+            <Locations />
           </div>
 
           {/* Text Area */}
-          <form className="w-[350px] h-30 mb-10" action="">
+          <div className="w-[350px] h-30 mb-10" action="">
             <textarea
               id="activity"
               type="text"
@@ -133,7 +138,7 @@ const Timer = () => {
                 setActivity(e.target.value);
               }}
             />
-          </form>
+          </div>
 
           {/* Buttons */}
 
@@ -146,9 +151,11 @@ const Timer = () => {
                   className={buttonBlue}
                   onClick={() => {
                     if (!isStart) {
+                      const today = new Date();
                       clearInterval(timeId.current);
-                      setStartTime(timeFormat);
-                      setStartDate(dateFormat);
+                      setStartDateTime(today);
+                      setStartDate(dateFormat(today));
+                      setStartTime(timeFormat(today));
                     }
                     setIsStart(!isStart);
                     setEventState("running");
@@ -166,9 +173,11 @@ const Timer = () => {
                   id="stop"
                   className={buttonBlue}
                   onClick={() => {
+                    const today = new Date();
                     clearInterval(timeId.current);
-                    setEndTime(timeFormat);
-                    setEndDate(dateFormat);
+                    setEndDateTime(today);
+                    setEndDate(dateFormat(today));
+                    setEndTime(timeFormat(today));
                     setEventState("stop");
                   }}
                 >
@@ -190,7 +199,7 @@ const Timer = () => {
             {eventState === "stop" && (
               <>
                 {/* SAVE */}
-                <button id="save" className={buttonBlue}>
+                <button id="save" className={buttonBlue} type="submit">
                   SAVE
                 </button>
 
@@ -206,7 +215,7 @@ const Timer = () => {
               </>
             )}
           </div>
-        </div>
+        </form>
       </section>
     </>
   );

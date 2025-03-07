@@ -10,6 +10,12 @@ import TimerPage from "./pages/TimerPage.jsx";
 import ActivityPage from "./pages/ActivityPage.jsx";
 import EditActivityPage from "./pages/EditActivityPage.jsx";
 
+// Add Activity
+
+// Delete Activity
+
+// Update Activity
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>

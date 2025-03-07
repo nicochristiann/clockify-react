@@ -6,7 +6,7 @@ const Navbar = () => {
   const linkStyle = "text-white flex text-lg font-thin cursor-pointer";
   return (
     <>
-      <nav className="bg-[#25367B] h-[18vh]">
+      <nav className="bg-[#25367B]">
         <div className="flex justify-between items-center px-[12vw] py-9">
           <NavLink className="flex-none items-center mr-4" to="/">
             <img className="h-9 w-60" src={logo} alt="React Jobs" />

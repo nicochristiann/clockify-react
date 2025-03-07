@@ -4,7 +4,9 @@ import Timer from "../components/Timer";
 const TimerPage = () => {
   return (
     <>
-      <Timer />
+      <div className="mt-5">
+        <Timer />
+      </div>
     </>
   );
 };
