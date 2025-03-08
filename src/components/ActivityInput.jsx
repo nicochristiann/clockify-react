@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import search from "../assets/Clockify/Search.svg";
 import dropdown from "../assets/Clockify/Dropdown-white.png";
 
 const ActivityInput = () => {
   const [isDown, setIsDown] = useState(false);
   const [select, setSelect] = useState("Latest Date");
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDown(false);
+      }
+    }
+
+    // Event listener saat klik di luar
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
-      <form action="" className="flex flex-col gap-5 w-[100%]">
+      <form className="flex flex-col gap-5 w-[100%]">
         <div className="w-[100%] h-15 flex gap-5">
           {/* Search Activity */}
           <div className="relative w-[70%] h-[100%]">
@@ -27,12 +43,15 @@ const ActivityInput = () => {
           {/* Drop Down List */}
           <div
             className="relative bg-[#434B8C] w-[30%] h-[100%] px-4 py-6 flex items-center rounded-xl justify-between cursor-pointer"
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={() => {
+              // e.preventDefault();
               setIsDown(!isDown);
             }}
           >
-            <button className="absolute text-white font-light text-sm lg:text-lg md:text-md cursor-pointer">
+            <button
+              type="button"
+              className="absolute text-white font-light text-sm lg:text-lg md:text-md cursor-pointer"
+            >
               {select}
             </button>
             <img
@@ -47,7 +66,7 @@ const ActivityInput = () => {
                     className="w-[100%] px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-lg cursor-pointer"
                     onClick={() => {
                       setSelect("Latest Date");
-                      setIsDown(!isDown);
+                      setIsDown(false);
                     }}
                   >
                     Latest Date
@@ -56,7 +75,7 @@ const ActivityInput = () => {
                     className="w-[100%] px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-lg cursor-pointer"
                     onClick={() => {
                       setSelect("Oldest Date");
-                      setIsDown(!isDown);
+                      setIsDown(false);
                     }}
                   >
                     Oldest Date

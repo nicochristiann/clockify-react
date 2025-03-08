@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Locations from "./Locations";
+import { ActivityContext } from "../context/ActivityProvider";
+import { useNavigate } from "react-router";
 
 const Timer = () => {
   const [time, setTime] = useState(0);
@@ -10,10 +12,33 @@ const Timer = () => {
   const [endDate, setEndDate] = useState("");
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
-  const [activity, setActivity] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [description, setDescription] = useState("");
 
   const [eventState, setEventState] = useState("start");
   const timeId = useRef();
+
+  const { activities, addActivity } = useContext(ActivityContext);
+  const navigation = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (description === "") {
+      alert("Please fill the activity description");
+      return;
+    }
+
+    const newActivity = {
+      id: activities.length + 1,
+      startTime: startDateTime,
+      endTime: endDateTime,
+      description: description,
+      location: `${latitude}.${longitude}`,
+    };
+    addActivity(newActivity);
+    navigation("/activity");
+  };
 
   useEffect(() => {
     if (isStart) {
@@ -80,18 +105,13 @@ const Timer = () => {
     setActivity("");
   };
 
-  const submitTime = (e) => {
-    e.preventDefault();
-    const newData = {};
-  };
-
   const buttonBlue = "bg-[#2EBED9] w-40 py-3 rounded-xl text-white";
   const buttonWhite = "bg-white w-40 py-3 rounded-xl text-[#A7A6C5]";
 
   return (
     <>
       <section>
-        <form className="flex flex-col items-center" onSubmit={submitTime}>
+        <form className="flex flex-col items-center" onSubmit={handleSubmit}>
           <div className="flex flex-col items-center">
             <span className="text-white text-3xl font-semibold mb-40">
               Timer
@@ -123,19 +143,24 @@ const Timer = () => {
 
           {/* Location */}
           <div className="w-[350px] h-13 flex flex-col items-center justify-center bg-[#434B8C] rounded-xl shadow-md p-4 mb-10">
-            <Locations />
+            <Locations
+              latitude={latitude}
+              setLatitude={setLatitude}
+              longitude={longitude}
+              setLongitude={setLongitude}
+            />
           </div>
 
           {/* Text Area */}
-          <div className="w-[350px] h-30 mb-10" action="">
+          <div className="w-[350px] h-30 mb-10">
             <textarea
               id="activity"
               type="text"
               placeholder="Write your activity here ..."
               className="p-2.5 rounded-2xl bg-[#F5F6FC] w-[100%] h-[100%] resize-none text-sm"
-              value={activity}
+              value={description}
               onChange={(e) => {
-                setActivity(e.target.value);
+                setDescription(e.target.value);
               }}
             />
           </div>

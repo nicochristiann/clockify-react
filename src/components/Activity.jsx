@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import clock from "../assets/Clockify/clock.png";
 import location from "../assets/Clockify/placeholder.png";
 
 const Activity = ({ activity, duration, startTime, endTime }) => {
   return (
-    // Perlu di ganti pake props lg nanti
     <div className="w-[100%]">
       <div className="w-[100%] flex justify-between px-5 py-3">
         <div>
