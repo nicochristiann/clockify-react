@@ -22,7 +22,7 @@ const Activity = ({ activity, duration, startTime, endTime }) => {
           <div className="flex items-center gap-1">
             <img className="w-3 h-4" src={location} alt="" />
             <p className="text-sm font-light text-[#A7A6C5]">
-              {activity.location}
+              {`${activity.latitude}.${activity.longitude}`}
             </p>
           </div>
         </div>

@@ -34,7 +34,8 @@ const Timer = () => {
       startTime: startDateTime,
       endTime: endDateTime,
       description: description,
-      location: `${latitude}.${longitude}`,
+      latitude,
+      longitude,
     };
     addActivity(newActivity);
     navigation("/activity");
@@ -105,8 +106,30 @@ const Timer = () => {
     setActivity("");
   };
 
-  const buttonBlue = "bg-[#2EBED9] w-40 py-3 rounded-xl text-white";
-  const buttonWhite = "bg-white w-40 py-3 rounded-xl text-[#A7A6C5]";
+  const handleButton = () => {
+    const today = new Date();
+    clearInterval(timeId.current);
+
+    if (eventState === "start") {
+      setStartDateTime(today);
+      setStartDate(dateFormat(today));
+      setStartTime(timeFormat(today));
+      setIsStart(!isStart);
+      setEventState("running");
+    } else if (eventState === "running") {
+      setEndDateTime(today);
+      setEndDate(dateFormat(today));
+      setEndTime(timeFormat(today));
+      setEventState("stop");
+    } else if (eventState === "stop") {
+      reset();
+    }
+  };
+
+  const buttonBlue =
+    "bg-[#2EBED9] w-40 py-3 rounded-xl text-white cursor-pointer";
+  const buttonWhite =
+    "bg-white w-40 py-3 rounded-xl text-[#A7A6C5] cursor-pointer";
 
   return (
     <>
@@ -124,7 +147,7 @@ const Timer = () => {
 
             {/* Start & End */}
             <div className="flex gap-10 mb-10">
-              <div className="flex flex-col items-center text-white">
+              <div className="flex flex-col items-center text-white w-[6vw]">
                 <span className="text-[14px]">Start Time</span>
                 <span className="text-[20px]">
                   {startTime ? startTime : "-"}
@@ -133,7 +156,7 @@ const Timer = () => {
                   {startDate ? startDate : "-"}
                 </span>
               </div>
-              <div className="flex flex-col items-center text-white">
+              <div className="flex flex-col items-center text-white w-[6vw]">
                 <span className="text-[14px]">End Time</span>
                 <span className="text-[20px]">{endTime ? endTime : "-"}</span>
                 <span className="text-[12px]">{endDate ? endDate : "-"}</span>
@@ -175,16 +198,8 @@ const Timer = () => {
                   id="start"
                   className={buttonBlue}
                   onClick={() => {
-                    if (!isStart) {
-                      const today = new Date();
-                      clearInterval(timeId.current);
-                      setStartDateTime(today);
-                      setStartDate(dateFormat(today));
-                      setStartTime(timeFormat(today));
-                    }
-                    setIsStart(!isStart);
                     setEventState("running");
-                    // buttonSelection();
+                    handleButton();
                   }}
                 >
                   START
@@ -198,12 +213,8 @@ const Timer = () => {
                   id="stop"
                   className={buttonBlue}
                   onClick={() => {
-                    const today = new Date();
-                    clearInterval(timeId.current);
-                    setEndDateTime(today);
-                    setEndDate(dateFormat(today));
-                    setEndTime(timeFormat(today));
                     setEventState("stop");
+                    handleButton();
                   }}
                 >
                   STOP

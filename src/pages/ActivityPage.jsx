@@ -7,11 +7,24 @@ import { ActivityContext } from "../context/ActivityProvider";
 
 const ActivityPage = () => {
   const { activities } = useContext(ActivityContext);
+  const [sortActivity, setSortActivity] = useState([]);
+  const [sortChoice, setSortChoice] = useState("Latest Date");
+
+  useEffect(() => {
+    sorted(sortChoice);
+  }, [sortChoice]);
 
   // Descending
-  const sortActivity = [...activities].sort(
-    (a, b) => b.startTime - a.startTime
-  );
+  const sortDescending = () => {
+    const sort = [...activities].sort((a, b) => b.startTime - a.startTime);
+    setSortActivity(sort);
+  };
+
+  // Ascending
+  const sortAscending = () => {
+    const sort = [...activities].sort((a, b) => a.startTime - b.startTime);
+    setSortActivity(sort);
+  };
 
   const formatter = (h, m, s, type) => {
     h = h < 10 ? "0" + h : h;
@@ -62,6 +75,21 @@ const ActivityPage = () => {
     }
   };
 
+  const sorted = (choice) => {
+    switch (choice) {
+      case "Latest Date":
+        sortDescending();
+        break;
+      case "Oldest Date":
+        sortAscending();
+        break;
+      case "Near Me":
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       <section>
@@ -69,11 +97,14 @@ const ActivityPage = () => {
           <div className="flex flex-col justify-center items-center w-[60vw]">
             <p className="text-white text-4xl mb-15">Activity</p>
             <div className="mb-15 w-[100%]">
-              <ActivityInput />
+              <ActivityInput
+                sortChoice={sortChoice}
+                setSortChoice={setSortChoice}
+              />
             </div>
 
             {/* Activities */}
-            <div className="w-[100%] h-[60vh] overflow-hidden overflow-y-auto">
+            <div className="w-[100%] h-[58vh] overflow-hidden overflow-y-auto">
               {/* Date */}
 
               {/* Activities on current Date */}

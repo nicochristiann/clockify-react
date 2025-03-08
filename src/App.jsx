@@ -20,8 +20,8 @@ const App = () => {
             <Route path="/timer" element={<TimerPage />} />
             <Route path="/activity" element={<ActivityPage />} />
             <Route path="/edit-activity/:id" element={<EditActivityPage />} />
-            <Route path="*" element={<ErrorPage />} />
           </Route>
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>
     </ActivityProvider>
