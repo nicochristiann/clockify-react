@@ -24,7 +24,7 @@ const Dates = ({ createdDate }) => {
   };
 
   return (
-    <div className="w-[100%] h-[100%] bg-[#434B8C] px-4 py-1 text-md">
+    <div className="w-[60vw] h-[100%] bg-[#434B8C] px-4 py-1 text-md">
       <p className="text-[#F8D068]">{dateFormat(createdDate)}</p>
     </div>
   );

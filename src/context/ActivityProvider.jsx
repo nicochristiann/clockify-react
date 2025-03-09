@@ -84,7 +84,9 @@ const ActivityProvider = ({ children }) => {
   };
 
   const deleteActivity = (id) => {
-    setActivities(activities.filter((activity) => activity.id !== id));
+    setActivities((prevActivities) =>
+      prevActivities.filter((activity) => activity.id !== id)
+    );
   };
 
   return (

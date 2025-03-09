@@ -43,7 +43,7 @@ const ActivityInput = ({ sortChoice, setSortChoice }) => {
             />
             {isDown && (
               <>
-                <ul className="relative top-15 left-[-15px] mt-2 bg-white rounded-lg cursor-pointer">
+                <ul className="relative top-15 left-[-15px] mt-2 bg-white rounded-lg cursor-pointer z-10">
                   <li
                     className="w-[100%] px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-lg cursor-pointer"
                     onClick={() => {

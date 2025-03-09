@@ -12,7 +12,7 @@ const ActivityPage = () => {
 
   useEffect(() => {
     sorted(sortChoice);
-  }, [sortChoice]);
+  }, [sortChoice, activities]);
 
   // Descending
   const sortDescending = () => {
@@ -94,9 +94,9 @@ const ActivityPage = () => {
     <>
       <section>
         <div className="flex items-center w-screen justify-center">
-          <div className="flex flex-col justify-center items-center w-[60vw]">
+          <div className="flex flex-col justify-center items-center">
             <p className="text-white text-4xl mb-15">Activity</p>
-            <div className="mb-15 w-[100%]">
+            <div className="mb-15 w-[60vw]">
               <ActivityInput
                 sortChoice={sortChoice}
                 setSortChoice={setSortChoice}
@@ -104,11 +104,11 @@ const ActivityPage = () => {
             </div>
 
             {/* Activities */}
-            <div className="w-[100%] h-[58vh] overflow-hidden overflow-y-auto">
+            <div className="w-[60vw] h-[58vh] overflow-y-scroll overflow-x-hidden">
               {/* Date */}
 
               {/* Activities on current Date */}
-              <div className="w-[100%] flex flex-col items-center overflow-hidden">
+              <div className="flex flex-col">
                 {sortActivity.map((activity, index, array) => (
                   <>
                     {showDate(activity, index, array) && (
