@@ -1,7 +1,8 @@
 import React from "react";
 
 const StartEndTime = ({ startTime, startDate, endTime, endDate }) => {
-  const style = "flex flex-col items-center text-white w-[6vw]";
+  const style = "flex flex-col flex-none items-center text-white px-3 py-1";
+
   return (
     <>
       <div className={style}>

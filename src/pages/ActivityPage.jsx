@@ -4,9 +4,11 @@ import Line from "../components/Line";
 import Dates from "../components/Dates";
 import Activity from "../components/Activity";
 import { ActivityContext } from "../context/ActivityProvider";
+import { TimerContext } from "../context/TimerProvider";
 
 const ActivityPage = () => {
   const { activities } = useContext(ActivityContext);
+  const { timer, getSeconds } = useContext(TimerContext);
   const [sortActivity, setSortActivity] = useState([]);
   const [sortChoice, setSortChoice] = useState("Latest Date");
   const [search, setSearch] = useState("");
@@ -14,6 +16,22 @@ const ActivityPage = () => {
   useEffect(() => {
     sorted(sortChoice);
   }, [sortChoice, activities]);
+
+  const sorted = (choice) => {
+    switch (choice) {
+      case "Latest Date":
+        sortDescending();
+        break;
+      case "Oldest Date":
+        sortAscending();
+        break;
+      case "Nearby":
+        // Belom
+        break;
+      default:
+        break;
+    }
+  };
 
   // Descending
   const sortDescending = () => {
@@ -27,33 +45,7 @@ const ActivityPage = () => {
     setSortActivity(sort);
   };
 
-  const formatter = (h, m, s, type) => {
-    h = h < 10 ? "0" + h : h;
-    m = m < 10 ? "0" + m : m;
-    s = s < 10 ? "0" + s : s;
-    return type === "timer" ? h + " : " + m + " : " + s : h + ":" + m + ":" + s;
-  };
-
-  const timerFormat = (time) => {
-    const hour = Math.floor(time / 60 / 60) % 24;
-    const minute = Math.floor(time / 60) % 60;
-    const second = Math.floor(time % 60);
-
-    return formatter(hour, minute, second, "timer");
-  };
-
-  const timer = (today) => {
-    const s = today.getSeconds();
-    const m = today.getMinutes();
-    const h = today.getHours();
-
-    return formatter(h, m, s, "time");
-  };
-
-  const getSeconds = (startTime, endTime) => {
-    const seconds = startTime.getTime() - endTime.getTime();
-    return timerFormat(Math.abs(seconds / 1000));
-  };
+  // Nearby
 
   const isSameDate = (date1, date2) => {
     return (
@@ -73,21 +65,6 @@ const ActivityPage = () => {
       return true;
     } else {
       return false;
-    }
-  };
-
-  const sorted = (choice) => {
-    switch (choice) {
-      case "Latest Date":
-        sortDescending();
-        break;
-      case "Oldest Date":
-        sortAscending();
-        break;
-      case "Near Me":
-        break;
-      default:
-        break;
     }
   };
 
@@ -113,7 +90,7 @@ const ActivityPage = () => {
               {/* Activities on current Date */}
               <div className="flex flex-col">
                 {sortActivity.map((activity, index, array) => (
-                  <>
+                  <div key={activity.id}>
                     {showDate(activity, index, array) && (
                       <Dates createdDate={activity.startTime} />
                     )}
@@ -133,7 +110,7 @@ const ActivityPage = () => {
                         activity.startTime,
                         array[index + 1].startTime
                       ) && <Line />}
-                  </>
+                  </div>
                 ))}
               </div>
             </div>

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import TimerButtons from "./TimerButtons";
 import TextArea from "./TextArea";
 import StartEndTime from "./StartEndTime";
+import { TimerContext } from "../context/TimerProvider";
 
 const Timer = () => {
   const [time, setTime] = useState(0);
@@ -23,6 +24,7 @@ const Timer = () => {
   const timeId = useRef();
 
   const { activities, addActivity } = useContext(ActivityContext);
+  const { timerFormat, dateFormat, timer } = useContext(TimerContext);
   const navigation = useNavigate();
 
   const handleSubmit = (e) => {
@@ -53,51 +55,6 @@ const Timer = () => {
     return () => clearInterval(timeId.current);
   }, [isStart]);
 
-  const formatter = (h, m, s, type) => {
-    h = h < 10 ? "0" + h : h;
-    m = m < 10 ? "0" + m : m;
-    s = s < 10 ? "0" + s : s;
-    return type === "timer" ? h + " : " + m + " : " + s : h + ":" + m + ":" + s;
-  };
-
-  const timerFormat = (time) => {
-    let hour = Math.floor(time / 60 / 60) % 24;
-    let minute = Math.floor(time / 60) % 60;
-    let second = Math.floor(time % 60);
-
-    return formatter(hour, minute, second, "timer");
-  };
-
-  const timeFormat = (today) => {
-    const s = today.getSeconds();
-    const m = today.getMinutes();
-    const h = today.getHours();
-
-    return formatter(h, m, s, "time");
-  };
-
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Des",
-  ];
-
-  const dateFormat = (today) => {
-    const day = today.getDate();
-    const month = months[today.getMonth()];
-    const year = today.getFullYear() % 100;
-    return day + " " + month + " " + year;
-  };
-
   const reset = () => {
     setIsStart(false);
     setTime(0);
@@ -116,13 +73,13 @@ const Timer = () => {
     if (eventState === "start") {
       setStartDateTime(today);
       setStartDate(dateFormat(today));
-      setStartTime(timeFormat(today));
+      setStartTime(timer(today));
       setIsStart(!isStart);
       setEventState("running");
     } else if (eventState === "running") {
       setEndDateTime(today);
       setEndDate(dateFormat(today));
-      setEndTime(timeFormat(today));
+      setEndTime(timer(today));
       setEventState("stop");
     } else if (eventState === "stop") {
       reset();
@@ -155,64 +112,69 @@ const Timer = () => {
                 startTime={startTime}
                 endDate={endDate}
                 endTime={endTime}
+                isEdit={false}
               />
             </div>
-          </div>
-
-          {/* Location */}
-          <div className="w-[350px] h-13 flex flex-col items-center justify-center bg-[#434B8C] rounded-xl shadow-md p-4 mb-10">
-            <Locations
-              latitude={latitude}
-              setLatitude={setLatitude}
-              longitude={longitude}
-              setLongitude={setLongitude}
-            />
-          </div>
-
-          {/* Text Area */}
-          <div className="w-[350px] h-30 mb-10">
-            <TextArea
-              description={description}
-              setDescription={setDescription}
-            />
-          </div>
-
-          {/* Buttons */}
-
-          {/* START */}
-          <div className="flex gap-5">
-            {eventState === "start" && (
-              <TimerButtons
-                text="START"
-                isBlue={true}
-                setEventState={setEventState}
-                handleButton={handleButton}
+            {/* Location */}
+            <div className="w-[350px] h-13 flex flex-col items-center justify-center bg-[#434B8C] rounded-xl shadow-md p-4 mb-10">
+              <Locations
+                latitude={latitude}
+                setLatitude={setLatitude}
+                longitude={longitude}
+                setLongitude={setLongitude}
               />
-            )}
-            {eventState === "running" && (
-              <>
-                {/* STOP */}
+            </div>
+
+            {/* Text Area */}
+            <div className="w-[350px] h-30 mb-10">
+              <TextArea
+                description={description}
+                setDescription={setDescription}
+              />
+            </div>
+
+            {/* Buttons */}
+
+            {/* START */}
+            <div className="flex gap-5">
+              {eventState === "start" && (
                 <TimerButtons
-                  text="STOP"
+                  text="START"
                   isBlue={true}
                   setEventState={setEventState}
                   handleButton={handleButton}
                 />
+              )}
+              {eventState === "running" && (
+                <>
+                  {/* STOP */}
+                  <TimerButtons
+                    text="STOP"
+                    isBlue={true}
+                    setEventState={setEventState}
+                    handleButton={handleButton}
+                  />
 
-                {/* RESET */}
-                <TimerButtons text="RESET" isBlue={false} reset={reset} />
-              </>
-            )}
+                  {/* RESET */}
+                  <TimerButtons text="RESET" isBlue={false} reset={reset} />
+                </>
+              )}
 
-            {eventState === "stop" && (
-              <>
-                {/* SAVE */}
-                <TimerButtons text="SAVE" isBlue={true} />
+              {eventState === "stop" && (
+                <>
+                  {/* SAVE */}
+                  <TimerButtons text="SAVE" isBlue={true} />
 
-                {/* DELETE */}
-                <TimerButtons text="DELETE" isBlue={false} reset={reset} />
-              </>
-            )}
+                  {/* DELETE */}
+                  <TimerButtons
+                    text="DELETE"
+                    isBlue={false}
+                    reset={reset}
+                    isEdit={false}
+                  />
+                </>
+              )}
+            </div>
           </div>
         </form>
       </section>

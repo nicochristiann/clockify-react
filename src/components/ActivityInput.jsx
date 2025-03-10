@@ -40,12 +40,9 @@ const ActivityInput = ({ sortChoice, setSortChoice, search, setSearch }) => {
               setIsDown(false);
             }}
           >
-            <button
-              type="button"
-              className="absolute left-5 text-white font-light text-sm lg:text-lg md:text-md cursor-pointer"
-            >
+            <div className="absolute left-5 text-white font-light text-sm lg:text-lg md:text-md cursor-pointer">
               {sortChoice}
-            </button>
+            </div>
             <img
               className={`absolute right-4 h-5 w-auto transition-transform duration-300 ${
                 isDown ? "rotate-180" : "rotate-0"
@@ -82,11 +79,11 @@ const ActivityInput = ({ sortChoice, setSortChoice, search, setSearch }) => {
                 <li
                   className="px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-xl"
                   onClick={() => {
-                    setSortChoice("Near Me");
+                    setSortChoice("Nearby");
                     setIsDown(false);
                   }}
                 >
-                  Near Me
+                  Nearby
                 </li>
               </ul>
             </div>

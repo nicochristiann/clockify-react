@@ -1,9 +1,15 @@
 import React, { useEffect } from "react";
 import locationImg from "../assets/Clockify/Placeholder-big.svg";
 
-const Locations = ({ latitude, setLatitude, longitude, setLongitude }) => {
+const Locations = ({
+  latitude,
+  setLatitude,
+  longitude,
+  setLongitude,
+  isEdit,
+}) => {
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (navigator.geolocation && !isEdit) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);

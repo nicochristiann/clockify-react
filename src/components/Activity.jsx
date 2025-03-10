@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import clock from "../assets/Clockify/clock.png";
 import location from "../assets/Clockify/placeholder.png";
 import { ActivityContext } from "../context/ActivityProvider";
+import { Link } from "react-router";
 
 const Activity = ({ activity, duration, startTime, endTime }) => {
   const { deleteActivity } = useContext(ActivityContext);
@@ -30,28 +31,30 @@ const Activity = ({ activity, duration, startTime, endTime }) => {
             : "duration-200 hover:bg-[#192865] hover:-translate-x-[72px]"
         }`}
       >
-        <div className="flex w-[60vw] justify-between px-[1vw] py-3">
-          <div>
-            <p className="text-lg font-bold text-white">{duration}</p>
-            <div className="flex items-center gap-1">
-              <img className="w-3 h-3" src={clock} alt="" />
-              <p className="text-sm font-light text-[#A7A6C5]">
-                {startTime} - {endTime}
+        <Link to={`/edit-activity/${activity.id}`}>
+          <div className="flex w-[60vw] justify-between px-[1vw] py-3">
+            <div>
+              <p className="text-lg font-bold text-white">{duration}</p>
+              <div className="flex items-center gap-1">
+                <img className="w-3 h-3" src={clock} alt="" />
+                <p className="text-sm font-light text-[#A7A6C5]">
+                  {startTime} - {endTime}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-semibold text-white">
+                {activity.description}
               </p>
+              <div className="flex items-center gap-1">
+                <img className="w-3 h-4" src={location} alt="" />
+                <p className="text-sm font-light text-[#A7A6C5]">
+                  {`${activity.latitude}.${activity.longitude}`}
+                </p>
+              </div>
             </div>
           </div>
-          <div className="text-right">
-            <p className="text-lg font-semibold text-white">
-              {activity.description}
-            </p>
-            <div className="flex items-center gap-1">
-              <img className="w-3 h-4" src={location} alt="" />
-              <p className="text-sm font-light text-[#A7A6C5]">
-                {`${activity.latitude}.${activity.longitude}`}
-              </p>
-            </div>
-          </div>
-        </div>
+        </Link>
         <div>
           <button
             onClick={() => onDeleteClick(activity.id)}
