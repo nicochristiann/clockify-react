@@ -1,24 +1,35 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import clock from "../assets/Clockify/clock.png";
 import location from "../assets/Clockify/placeholder.png";
 import { ActivityContext } from "../context/ActivityProvider";
-import { useNavigate } from "react-router";
 
 const Activity = ({ activity, duration, startTime, endTime }) => {
   const { deleteActivity } = useContext(ActivityContext);
-  const navigate = useNavigate();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const onDeleteClick = (activityId) => {
     const confirm = window.confirm(
       "Are you sure you want to delete this activity?"
     );
     if (!confirm) return;
-    deleteActivity(activityId);
+
+    setIsDeleting(true); // karena pake use state jadi bakal re render dlu
+
+    // 0.5s sebelum data terhapus, dikasi animasi
+    setTimeout(() => {
+      deleteActivity(activityId);
+    }, 500);
   };
 
   return (
-    <div className="">
-      <div className="flex w-[75vw] h-[100%] cursor-pointer transition-all duration-300 transform hover:bg-[#192865] hover:translate-x-[-72px]">
+    <div>
+      <div
+        className={`flex w-[75vw] h-[100%] cursor-pointer transition-all transform ${
+          isDeleting
+            ? "duration-500 opacity-0 translate-x-full"
+            : "duration-200 hover:bg-[#192865] hover:-translate-x-[72px]"
+        }`}
+      >
         <div className="flex w-[60vw] justify-between px-[1vw] py-3">
           <div>
             <p className="text-lg font-bold text-white">{duration}</p>

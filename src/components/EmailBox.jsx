@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import mail from "../assets/Clockify/Icon/e-mail.png";
 
-const EmailBox = () => {
+const EmailBox = ({ email, setEmail }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {
@@ -26,6 +26,8 @@ const EmailBox = () => {
               id="email"
               onFocus={handleFocus}
               onBlur={handleBlur}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <label
               className={`absolute left-2 text-md cursor-text transition-all duration-200 ${

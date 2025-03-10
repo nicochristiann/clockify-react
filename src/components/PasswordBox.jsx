@@ -4,11 +4,8 @@ import key from "../assets/Clockify/Key.svg";
 import eyeOn from "../assets/Clockify/Icon/Back-white-1.png";
 import eyeOff from "../assets/Clockify/Icon/Eye-Off.png";
 
-const PasswordBox = ({ isConfirm }) => {
+const PasswordBox = ({ password, setPassword, isConfirm }) => {
   const [showPass, setShowPass] = useState(false);
-  const handlePass = () => {
-    setShowPass(!showPass);
-  };
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {
@@ -17,6 +14,18 @@ const PasswordBox = ({ isConfirm }) => {
 
   const handleBlur = (e) => {
     e.target.value === "" && setIsFocused(false);
+  };
+
+  const handleShow = () => {
+    if (isConfirm && isFocused) {
+      return "Confirm Password";
+    } else if (isConfirm && !isFocused) {
+      return "Confirm Your Password";
+    } else if (!isConfirm && isFocused) {
+      return "Password";
+    } else if (!isConfirm && !isFocused) {
+      return "Input Your Password";
+    }
   };
   return (
     <>
@@ -32,6 +41,8 @@ const PasswordBox = ({ isConfirm }) => {
               id={isConfirm ? "confrimPassword" : "password"}
               onFocus={handleFocus}
               onBlur={handleBlur}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <label
               className={`absolute left-2 text-md cursor-text transition-all duration-200 ${
@@ -42,14 +53,14 @@ const PasswordBox = ({ isConfirm }) => {
               htmlFor={isConfirm ? "confrimPassword" : "password"}
               id={isConfirm ? "confrimPasswordLabel" : "passwordLabel"}
             >
-              {isConfirm ? "Confirm Your Password" : "Input Your Password"}
+              {handleShow()}
             </label>
             <img
               className="cursor-pointer absolute right-0 top-1.5 h-7 w-auto"
               src={showPass ? eyeOn : eyeOff}
               id="eye"
               alt=""
-              onClick={handlePass}
+              onClick={() => setShowPass(!showPass)}
             />
           </div>
         </div>

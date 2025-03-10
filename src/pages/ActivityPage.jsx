@@ -9,6 +9,7 @@ const ActivityPage = () => {
   const { activities } = useContext(ActivityContext);
   const [sortActivity, setSortActivity] = useState([]);
   const [sortChoice, setSortChoice] = useState("Latest Date");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     sorted(sortChoice);
@@ -98,6 +99,8 @@ const ActivityPage = () => {
             <p className="text-white text-4xl mb-15">Activity</p>
             <div className="mb-15 w-[60vw]">
               <ActivityInput
+                search={search}
+                setSearch={setSearch}
                 sortChoice={sortChoice}
                 setSortChoice={setSortChoice}
               />

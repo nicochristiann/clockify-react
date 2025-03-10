@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import search from "../assets/Clockify/Search.svg";
+import React, { useState } from "react";
+import searchImg from "../assets/Clockify/Search.svg";
 import dropdown from "../assets/Clockify/Dropdown-white.png";
 
-const ActivityInput = ({ sortChoice, setSortChoice }) => {
+const ActivityInput = ({ sortChoice, setSortChoice, search, setSearch }) => {
   const [isDown, setIsDown] = useState(false);
+
   return (
     <>
       <form className="flex flex-col gap-5 w-[100%]">
@@ -16,65 +17,80 @@ const ActivityInput = ({ sortChoice, setSortChoice }) => {
               name="search"
               id="search"
               placeholder="Search activity"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
             />
             <img
               className="absolute h-11 w-auto right-1 top-2 cursor-pointer"
-              src={search}
+              src={searchImg}
               alt=""
             />
           </div>
+
           {/* Drop Down List */}
-          <div
-            className="relative bg-[#434B8C] w-[30%] h-[100%] px-4 py-6 flex items-center rounded-xl justify-between cursor-pointer"
+          <button
+            type="button"
+            className="relative bg-[#434B8C] w-[30%] h-[100%] py-6 flex items-center rounded-xl justify-between cursor-pointer"
             onClick={() => {
               setIsDown(!isDown);
+            }}
+            onBlur={() => {
+              setIsDown(false);
             }}
           >
             <button
               type="button"
-              className="absolute text-white font-light text-sm lg:text-lg md:text-md cursor-pointer"
+              className="absolute left-5 text-white font-light text-sm lg:text-lg md:text-md cursor-pointer"
             >
               {sortChoice}
             </button>
             <img
-              className="absolute right-1 h-5 w-auto"
+              className={`absolute right-4 h-5 w-auto transition-transform duration-300 ${
+                isDown ? "rotate-180" : "rotate-0"
+              }`}
               src={dropdown}
               alt=""
             />
-            {isDown && (
-              <>
-                <ul className="relative top-15 left-[-15px] mt-2 bg-white rounded-lg cursor-pointer z-10">
-                  <li
-                    className="w-[100%] px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-lg cursor-pointer"
-                    onClick={() => {
-                      setSortChoice("Latest Date");
-                      setIsDown(false);
-                    }}
-                  >
-                    Latest Date
-                  </li>
-                  <li
-                    className="w-[100%] px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-lg cursor-pointer"
-                    onClick={() => {
-                      setSortChoice("Oldest Date");
-                      setIsDown(false);
-                    }}
-                  >
-                    Oldest Date
-                  </li>
-                  <li
-                    className="w-[100%] px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-lg cursor-pointer"
-                    onClick={() => {
-                      setSortChoice("Near Me");
-                      setIsDown(false);
-                    }}
-                  >
-                    Near Me
-                  </li>
-                </ul>
-              </>
-            )}
-          </div>
+            <div
+              className={`absolute z-10 top-[100%] left-0 w-[100%] rounded-xl bg-white transition-all duration-300 ease-in-out transform ${
+                isDown
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 -translate-y-15 pointer-events-none"
+              }`}
+            >
+              <ul className="cursor-pointer text-left">
+                <li
+                  className="px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-xl"
+                  onClick={() => {
+                    setSortChoice("Latest Date");
+                    setIsDown(false);
+                  }}
+                >
+                  Latest Date
+                </li>
+                <li
+                  className="px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-xl"
+                  onClick={() => {
+                    setSortChoice("Oldest Date");
+                    setIsDown(false);
+                  }}
+                >
+                  Oldest Date
+                </li>
+                <li
+                  className="px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-xl"
+                  onClick={() => {
+                    setSortChoice("Near Me");
+                    setIsDown(false);
+                  }}
+                >
+                  Near Me
+                </li>
+              </ul>
+            </div>
+          </button>
         </div>
       </form>
     </>

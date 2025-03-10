@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Locations from "./Locations";
 import { ActivityContext } from "../context/ActivityProvider";
 import { useNavigate } from "react-router";
+import TimerButtons from "./TimerButtons";
+import TextArea from "./TextArea";
+import StartEndTime from "./StartEndTime";
 
 const Timer = () => {
   const [time, setTime] = useState(0);
@@ -103,7 +106,7 @@ const Timer = () => {
     setEndDate("-");
     setEndTime("-");
     setEventState("start");
-    setActivity("");
+    setDescription("");
   };
 
   const handleButton = () => {
@@ -147,20 +150,12 @@ const Timer = () => {
 
             {/* Start & End */}
             <div className="flex gap-10 mb-10">
-              <div className="flex flex-col items-center text-white w-[6vw]">
-                <span className="text-[14px]">Start Time</span>
-                <span className="text-[20px]">
-                  {startTime ? startTime : "-"}
-                </span>
-                <span className="text-[12px]">
-                  {startDate ? startDate : "-"}
-                </span>
-              </div>
-              <div className="flex flex-col items-center text-white w-[6vw]">
-                <span className="text-[14px]">End Time</span>
-                <span className="text-[20px]">{endTime ? endTime : "-"}</span>
-                <span className="text-[12px]">{endDate ? endDate : "-"}</span>
-              </div>
+              <StartEndTime
+                startDate={startDate}
+                startTime={startTime}
+                endDate={endDate}
+                endTime={endTime}
+              />
             </div>
           </div>
 
@@ -176,15 +171,9 @@ const Timer = () => {
 
           {/* Text Area */}
           <div className="w-[350px] h-30 mb-10">
-            <textarea
-              id="activity"
-              type="text"
-              placeholder="Write your activity here ..."
-              className="p-2.5 rounded-2xl bg-[#F5F6FC] w-[100%] h-[100%] resize-none text-sm"
-              value={description}
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
+            <TextArea
+              description={description}
+              setDescription={setDescription}
             />
           </div>
 
@@ -193,61 +182,35 @@ const Timer = () => {
           {/* START */}
           <div className="flex gap-5">
             {eventState === "start" && (
-              <>
-                <button
-                  id="start"
-                  className={buttonBlue}
-                  onClick={() => {
-                    setEventState("running");
-                    handleButton();
-                  }}
-                >
-                  START
-                </button>
-              </>
+              <TimerButtons
+                text="START"
+                isBlue={true}
+                setEventState={setEventState}
+                handleButton={handleButton}
+              />
             )}
             {eventState === "running" && (
               <>
                 {/* STOP */}
-                <button
-                  id="stop"
-                  className={buttonBlue}
-                  onClick={() => {
-                    setEventState("stop");
-                    handleButton();
-                  }}
-                >
-                  STOP
-                </button>
+                <TimerButtons
+                  text="STOP"
+                  isBlue={true}
+                  setEventState={setEventState}
+                  handleButton={handleButton}
+                />
 
                 {/* RESET */}
-                <button
-                  className={buttonWhite}
-                  onClick={() => {
-                    reset();
-                  }}
-                >
-                  RESET
-                </button>
+                <TimerButtons text="RESET" isBlue={false} reset={reset} />
               </>
             )}
 
             {eventState === "stop" && (
               <>
                 {/* SAVE */}
-                <button id="save" className={buttonBlue} type="submit">
-                  SAVE
-                </button>
+                <TimerButtons text="SAVE" isBlue={true} />
 
                 {/* DELETE */}
-                <button
-                  className={buttonWhite}
-                  onClick={() => {
-                    reset();
-                  }}
-                >
-                  DELETE
-                </button>
+                <TimerButtons text="DELETE" isBlue={false} reset={reset} />
               </>
             )}
           </div>
