@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import closeImg from "../assets/Clockify/close.png";
+import EditInput from "./EditInput";
 
 const EditTime = ({
   startDateTime,
-  setStartDateTime,
   endDateTime,
-  setEndDateTime,
   setIsEditing,
+  setCurrActivity,
 }) => {
   const [startHours, setStartHours] = useState(0);
   const [startMinutes, setStartMinutes] = useState(0);
@@ -39,79 +39,64 @@ const EditTime = ({
     setEndYear(endDateTime.getFullYear());
   }, [startDateTime, endDateTime]);
 
-  const formatter = (number) => {
-    return number < 10 ? "0" + number : number;
-  };
-
   const dayFormat = (month, year) => {
-    if (
-      month === 1 ||
-      month === 1 ||
-      month === 3 ||
-      month === 5 ||
-      month === 7 ||
-      month === 9 ||
-      month === 11
-    ) {
+    if (month % 2 === 1) {
       return 31;
-    } else if (
-      month === 4 ||
-      month === 6 ||
-      month === 8 ||
-      month === 10 ||
-      month === 12
-    ) {
+    } else if (month % 2 === 0 && month != 2) {
       return 30;
-    } else if (month === 2) {
+    } else {
       return year % 4 === 0 ? 29 : 28;
     }
-    return 0;
   };
 
-  const checkInput = (input, time, type) => {
-    switch (time) {
-      case "hours":
-        if (input > 23) {
-          type === "start" ? setStartHours(23) : setEndHours(23);
-        }
-        break;
-      case "minutes":
-        if (input > 59) {
-          type === "start" ? setStartMinutes(59) : setEndMinutes(59);
-        }
-        break;
-      case "seconds":
-        if (input > 59) {
-          type === "start" ? setStartSeconds(59) : setEndSeconds(59);
-        }
-        break;
-      case "date":
-        if (input > 12) {
-          type === "start" ? setStartMinutes(59) : setEndMinutes(59);
-        }
-        break;
-      case "month":
-        if (input > 12) {
-          type === "start" ? setStartMonth(12) : setEndMonth(12);
-        }
-        break;
-      case "year":
-        if (input > 2025) {
-          type === "start" ? setStartYear(2025) : setEndYear(2025);
-        }
-        break;
-    }
+  const isValidInput = () => {
+    const startDateTime = new Date(
+      startYear,
+      startMonth - 1,
+      startDate,
+      startHours,
+      startMinutes,
+      startSeconds
+    );
+    const endDateTime = new Date(
+      endYear,
+      endMonth - 1,
+      endDate,
+      endHours,
+      endMinutes,
+      endSeconds
+    );
+
+    return startDateTime <= endDateTime;
   };
 
-  const pressEnter = (e) => {
-    e.key === "Enter" && e.target.blur();
+  const setDateTime = () => {
+    setCurrActivity((prev) => ({
+      ...prev,
+      startTime: new Date(
+        startYear,
+        startMonth - 1,
+        startDate,
+        startHours,
+        startMinutes,
+        startSeconds
+      ),
+      endTime: new Date(
+        endYear,
+        endMonth - 1,
+        endDate,
+        endHours,
+        endMinutes,
+        endSeconds
+      ),
+    }));
   };
 
   return (
     <>
-      <div className="relative w-11.550px] flex flex-col px-10 rounded-xl bg-[rgba(197,197,197,0.6)] backdrop-blur-[10px] h-[310px] items-center justify-center gap-8">
+      <div className="relative flex flex-col px-10 rounded-xl bg-[rgba(197,197,197,0.6)] backdrop-blur-[10px] h-[350px] items-center justify-center gap-8">
         <img
-          className="cursor-pointer absolute top-8 right-8"
+          className="cursor-pointer absolute top-6 right-6"
           src={closeImg}
           alt=""
           onClick={() => {
@@ -122,267 +107,115 @@ const EditTime = ({
           <div className="flex flex-col items-center gap-4">
             <span className="text-2xl">Start Time</span>
             <div className="text-2xl flex gap-0.5">
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="startHours"
-                value={startHours}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setStartHours(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 0) setStartHours(0);
-                  if (num > 23) setStartHours(23);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
+              <EditInput
+                time={startHours}
+                setTime={setStartHours}
+                min={0}
+                max={23}
               />
               :
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="startMinutes"
+              <EditInput
+                time={startMinutes}
+                setTime={setStartMinutes}
                 min={0}
                 max={59}
-                value={startMinutes}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setStartMinutes(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 0) setStartMinutes(0);
-                  if (num > 59) setStartMinutes(59);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
               />
               :
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="startSeconds"
+              <EditInput
+                time={startSeconds}
+                setTime={setStartSeconds}
                 min={0}
                 max={59}
-                value={startSeconds}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setStartSeconds(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 0) setStartSeconds(0);
-                  if (num > 59) setStartSeconds(59);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
               />
             </div>
-            <div className="text-2xl flex gap-0.5">
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="startDate"
-                min={1}
-                max={dayFormat(startMonth, startYear)}
-                value={startDate}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setStartDate(newValue);
-                }}
-                onBlur={(e) => {
-                  const date = Number(dayFormat(startMonth, startYear));
-                  let num = Number(e.target.value);
-                  if (num < 0) setStartDate(0);
-                  if (num > date) setStartDate(date);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
-              />
-              -
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="startMonth"
-                min={1}
-                max={12}
-                value={startMonth}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setStartMonth(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 0) setStartMonth(0);
-                  if (num > 12) setStartMonth(12);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
-              />
-              -
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-16.5 p-2"
-                type="text"
-                name="startYear"
-                min={2000}
-                max={2025}
-                value={startYear}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setStartYear(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 2000) setStartYear(2000);
-                  if (num > 2025) setStartYear(2025);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
-              />
+            <div className="flex flex-col items-center gap-4">
+              <span className="text-2xl">Start Date</span>
+              <div className="text-2xl flex gap-0.5">
+                <EditInput
+                  time={startDate}
+                  setTime={setStartDate}
+                  min={1}
+                  max={Number(dayFormat(startMonth, startYear))}
+                />
+                -
+                <EditInput
+                  time={startMonth}
+                  setTime={setStartMonth}
+                  min={1}
+                  max={12}
+                />
+                -
+                <EditInput
+                  time={startYear}
+                  setTime={setStartYear}
+                  min={2000}
+                  max={2025}
+                />
+              </div>
             </div>
           </div>
           <div className="flex flex-col items-center gap-4">
             <span className="text-2xl">End Time</span>
             <div className="text-2xl flex gap-0.5">
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="endHours"
+              <EditInput
+                time={endHours}
+                setTime={setEndHours}
                 min={0}
                 max={23}
-                value={endHours}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setEndHours(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 0) setEndHours(0);
-                  if (num > 23) setEndHours(23);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
               />
               :
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="endMinutes"
+              <EditInput
+                time={endMinutes}
+                setTime={setEndMinutes}
                 min={0}
                 max={59}
-                value={endMinutes}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setEndMinutes(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 0) setEndMinutes(0);
-                  if (num > 59) setEndMinutes(59);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
               />
               :
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="endSeconds"
+              <EditInput
+                time={endSeconds}
+                setTime={setEndSeconds}
                 min={0}
                 max={59}
-                value={endSeconds}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setEndSeconds(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 0) setEndSeconds(0);
-                  if (num > 59) setEndSeconds(59);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
               />
             </div>
-            <div className="text-2xl flex gap-0.5">
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="endDate"
-                min={1}
-                max={dayFormat(endMonth, endYear)}
-                value={endDate}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setEndDate(newValue);
-                }}
-                onBlur={(e) => {
-                  const date = Number(dayFormat(endMonth, endYear));
-                  let num = Number(e.target.value);
-                  if (num < 0) setEndDate(0);
-                  if (num > date) setEndDate(date);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
-              />
-              -
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-11.5 p-2"
-                type="text"
-                name="endMonth"
-                min={1}
-                max={12}
-                value={endMonth}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setEndMonth(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 0) setEndMonth(0);
-                  if (num > 12) setEndMonth(12);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
-              />
-              -
-              <input
-                className="text-center bg-black rounded-lg text-lg text-white w-16.5 p-2"
-                type="text"
-                name="endYear"
-                min={2000}
-                max={2025}
-                value={endYear}
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/\D/g, "");
-                  setEndYear(newValue);
-                }}
-                onBlur={(e) => {
-                  let num = Number(e.target.value);
-                  if (num < 2000) setEndYear(2000);
-                  if (num > 2025) setEndYear(2025);
-                }}
-                onKeyDown={(e) => {
-                  pressEnter(e);
-                }}
-              />
+            <div className="flex flex-col items-center gap-4">
+              <span className="text-2xl">End Date</span>
+              <div className="text-2xl flex gap-0.5">
+                <EditInput
+                  time={endDate}
+                  setTime={setEndDate}
+                  min={1}
+                  max={Number(dayFormat(endMonth, endYear))}
+                />
+                -
+                <EditInput
+                  time={endMonth}
+                  setTime={setEndMonth}
+                  min={1}
+                  max={12}
+                />
+                -
+                <EditInput
+                  time={endYear}
+                  setTime={setEndYear}
+                  min={2000}
+                  max={2025}
+                />
+              </div>
             </div>
           </div>
         </div>
-        <button className="bg-[#2EBED9] w-40 py-3 rounded-xl text-white cursor-pointer">
+        <button
+          onClick={() => {
+            if (isValidInput()) {
+              setDateTime();
+              setIsEditing(false);
+            } else {
+              window.alert("Input a valid date time");
+            }
+          }}
+          className="bg-[#2EBED9] w-40 py-3 rounded-xl text-white cursor-pointer"
+        >
           SAVE
         </button>
       </div>

@@ -9,14 +9,14 @@ const TimerButtons = ({
   handleButton,
   reset,
   isEdit,
-  activityId,
+  currActivity,
 }) => {
   const buttonBlue =
     "bg-[#2EBED9] w-40 py-3 rounded-xl text-white cursor-pointer";
   const buttonWhite =
     "bg-white w-40 py-3 rounded-xl text-[#A7A6C5] cursor-pointer";
 
-  const { deleteActivity } = useContext(ActivityContext);
+  const { deleteActivity, updateActivity } = useContext(ActivityContext);
   const navigate = useNavigate();
 
   const remove = () => {
@@ -24,8 +24,8 @@ const TimerButtons = ({
       "Are you sure you want to delete this activity?"
     );
     if (!confirm) return;
-    deleteActivity(activityId);
-    navigate("/activity");
+    deleteActivity(currActivity.id);
+    isEdit && navigate("/activity");
   };
 
   const buttonSelection = () => {

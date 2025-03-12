@@ -7,15 +7,17 @@ import TextArea from "../components/TextArea";
 import StartEndTime from "../components/StartEndTime";
 import { TimerContext } from "../context/TimerProvider";
 import EditTime from "../components/EditTime";
+import { UserContext } from "../context/UserProvider";
 
 const EditActivityPage = () => {
   const { id } = useParams();
   const [currActivity, setCurrActivity] = useState({
+    id: "",
     startTime: new Date(),
     endTime: new Date(),
+    description: "",
     latitude: "",
     longitude: "",
-    description: "",
   });
 
   const [time, setTime] = useState(0);
@@ -29,14 +31,43 @@ const EditActivityPage = () => {
   const [longitude, setLongitude] = useState(null);
   const [description, setDescription] = useState("");
 
-  const { getActivity, updateActivity } = useContext(ActivityContext);
+  // Context
+  const { updateActivity } = useContext(ActivityContext);
   const { dateFormat, timer, getSeconds } = useContext(TimerContext);
+  const { currUser } = useContext(UserContext);
+
   const navigation = useNavigate();
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const activity = getActivity(id);
-    activity && setCurrActivity(activity);
-  }, [id]);
+    const fetchActivity = async () => {
+      try {
+        const res = await fetch(`http://localhost:8000/activities/${id}`);
+        const data = await res.json();
+
+        // Konversi format String di JSON ke Date
+        const formattedData = {
+          id: data.id,
+          startTime: new Date(data.startTime),
+          endTime: new Date(data.endTime),
+          description: data.description,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          createdAt: new Date(data.createdAt),
+          updatedAt: new Date(data.updatedAt),
+          userId: currUser.id,
+        };
+
+        setCurrActivity(formattedData);
+      } catch (error) {
+        console.error("Error Fetching Data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchActivity();
+  }, []);
 
   useEffect(() => {
     setTime(getSeconds(currActivity.startTime, currActivity.endTime));
@@ -49,6 +80,7 @@ const EditActivityPage = () => {
     setLatitude(currActivity.latitude);
     setLongitude(currActivity.longitude);
     setDescription(currActivity.description);
+    console.log(currActivity);
   }, [currActivity]);
 
   const handleSubmit = (e) => {
@@ -58,39 +90,44 @@ const EditActivityPage = () => {
       return;
     }
 
+    const confirm = window.confirm(
+      "Are you sure you want to update this activity?"
+    );
+    if (!confirm) return;
+
     const updatedActivity = {
-      id,
+      id: currActivity.id,
       startTime: startDateTime,
       endTime: endDateTime,
       description: description,
-      latitude,
-      longitude,
+      latitude: currActivity.latitude,
+      longitude: currActivity.longitude,
+      createdAt: currActivity.createdAt,
+      updatedAt: new Date(),
+      userId: currUser.id,
     };
+    // console.log(updateActivity);
     updateActivity(updatedActivity);
     navigation("/activity");
   };
-
-  const buttonBlue =
-    "bg-[#2EBED9] w-40 py-3 rounded-xl text-white cursor-pointer";
-  const buttonWhite =
-    "bg-white w-40 py-3 rounded-xl text-[#A7A6C5] cursor-pointer";
 
   const [isEditing, setIsEditing] = useState(false);
 
   return (
     <>
       {isEditing && (
-        <div
-          className={`absolute w-full h-full z-10 top-50 flex justify-center transition-all duration-200 transform ease-in-out opacity-100`}
-        >
-          <EditTime
-            startDateTime={currActivity.startTime}
-            setStartDateTime={setStartDateTime}
-            endDateTime={currActivity.endTime}
-            setEndDateTime={setEndDateTime}
-            setEndDate={setEndDate}
-            setIsEditing={setIsEditing}
-          />
+        <div className="fixed inset-0 z-10 flex items-center justify-center bg-[rgba(0,0,0,0.2)] backdrop-blur-[10px]">
+          <div>
+            <EditTime
+              startDateTime={currActivity.startTime}
+              setStartDateTime={setStartDateTime}
+              endDateTime={currActivity.endTime}
+              setEndDateTime={setEndDateTime}
+              setEndDate={setEndDate}
+              setIsEditing={setIsEditing}
+              setCurrActivity={setCurrActivity}
+            />
+          </div>
         </div>
       )}
       <section>
@@ -137,20 +174,26 @@ const EditActivityPage = () => {
               <TextArea
                 description={description}
                 setDescription={setDescription}
+                setCurrActivity={setCurrActivity}
               />
             </div>
 
             {/* Buttons */}
             <div className="flex gap-5">
               {/* SAVE */}
-              <TimerButtons text="SAVE" isBlue={true} />
+              <TimerButtons
+                text="SAVE"
+                isBlue={true}
+                isEdit={true}
+                currActivity={currActivity}
+              />
 
               {/* DELETE */}
               <TimerButtons
                 text="DELETE"
                 isBlue={false}
                 isEdit={true}
-                activityId={currActivity.id}
+                currActivity={currActivity}
               />
             </div>
           </div>

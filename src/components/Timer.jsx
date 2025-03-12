@@ -6,6 +6,8 @@ import TimerButtons from "./TimerButtons";
 import TextArea from "./TextArea";
 import StartEndTime from "./StartEndTime";
 import { TimerContext } from "../context/TimerProvider";
+import { v4 as uuidv4 } from "uuid";
+import { UserContext } from "../context/UserProvider";
 
 const Timer = () => {
   const [time, setTime] = useState(0);
@@ -23,8 +25,11 @@ const Timer = () => {
   const [eventState, setEventState] = useState("start");
   const timeId = useRef();
 
-  const { activities, addActivity } = useContext(ActivityContext);
+  // Context
+  const { addActivity } = useContext(ActivityContext);
   const { timerFormat, dateFormat, timer } = useContext(TimerContext);
+  const { currUser } = useContext(UserContext);
+
   const navigation = useNavigate();
 
   const handleSubmit = (e) => {
@@ -35,12 +40,15 @@ const Timer = () => {
     }
 
     const newActivity = {
-      id: activities.length + 1,
+      id: uuidv4(),
       startTime: startDateTime,
       endTime: endDateTime,
       description: description,
-      latitude,
-      longitude,
+      latitude: latitude.toString(),
+      longitude: longitude.toString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: currUser.id,
     };
     addActivity(newActivity);
     navigation("/activity");

@@ -8,9 +8,11 @@ const Navbar = () => {
     <>
       <nav className="bg-[#25367B]">
         <div className="flex justify-between items-center px-[12vw] py-9">
-          <NavLink className="flex-none items-center mr-4" to="/">
+          {/* <NavLink className="flex-none items-center mr-4" to="/"> */}
+          <div className="flex-none items-center mr-4" to="/">
             <img className="h-9 w-60" src={logo} alt="React Jobs" />
-          </NavLink>
+          </div>
+          {/* </NavLink> */}
           <div>
             <div className="flex gap-[10vw]">
               <NavLink to="/timer" className={linkStyle}>

@@ -1,23 +1,54 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [currUser, setCurrUser] = useState({
     id: "",
     email: "",
     password: "",
+    verified: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
-  const [user, setUser] = useState([
-    { id: "1", email: "tes@gmail.com", password: "tes12345" },
-    { id: "2", email: "admin@gmail.com", password: "admin123" },
-  ]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/users");
+        const data = await res.json();
 
-  const register = (email, password) => {
-    setUser([...user, { id: user.length + 1, email, password }]);
+        // Konversi format String di JSON ke Date
+        const formattedData = data.map((user) => ({
+          ...user,
+          createdAt: new Date(user.createdAt),
+          updatedAt: new Date(user.updatedAt),
+        }));
+
+        setUsers(formattedData);
+      } catch (error) {
+        console.log("Error Fetching Data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  // Register User
+  const register = async (newUser) => {
+    const res = await fetch("http://localhost:8000/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newUser),
+    });
+    return;
   };
 
+  // Login (set current user)
   const login = (email, password) => {
     const findUser = user.find(
       (item) => item.email === email && item.password === password
@@ -31,7 +62,7 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ currUser, setCurrUser, user, setUser, register, login }}
+      value={{ currUser, setCurrUser, users, setUsers, register, login }}
     >
       {children}
     </UserContext.Provider>

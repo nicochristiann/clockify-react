@@ -21,11 +21,15 @@ const ActivityInput = ({ sortChoice, setSortChoice, search, setSearch }) => {
               onChange={(e) => {
                 setSearch(e.target.value);
               }}
+              onKeyDown={(e) => {
+                e.key === "Enter";
+              }}
             />
             <img
               className="absolute h-11 w-auto right-1 top-2 cursor-pointer"
               src={searchImg}
               alt=""
+              onClick={() => {}}
             />
           </div>
 

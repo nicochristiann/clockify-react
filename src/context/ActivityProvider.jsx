@@ -1,112 +1,79 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { createContext, useState } from "react";
+import { UserContext } from "./UserProvider";
 
 export const ActivityContext = createContext();
 
 const ActivityProvider = ({ children }) => {
-  const [activities, setActivities] = useState([
-    {
-      id: "1",
-      startTime: new Date("2020-03-01T12:00:00"),
-      endTime: new Date("2020-03-01T13:00:00"),
-      description: "Badminton",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-    {
-      id: "2",
-      startTime: new Date("2020-03-02T12:00:00"),
-      endTime: new Date("2020-03-02T12:30:00"),
-      description: "Futsal",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-    {
-      id: "3",
-      startTime: new Date("2020-03-01T11:00:00"),
-      endTime: new Date("2020-03-01T12:00:00"),
-      description: "Basket",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-    {
-      id: "4",
-      startTime: new Date("2020-03-05T18:00:00"),
-      endTime: new Date("2020-03-05T20:00:00"),
-      description: "Tennis",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-    {
-      id: "5",
-      startTime: new Date("2020-03-01T08:00:00"),
-      endTime: new Date("2020-03-01T12:00:00"),
-      description: "Futsal",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-    {
-      id: "6",
-      startTime: new Date("2020-03-02T12:00:00"),
-      endTime: new Date("2020-03-02T15:00:00"),
-      description: "Badminton",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-    {
-      id: "7",
-      startTime: new Date("2020-03-05T18:00:00"),
-      endTime: new Date("2020-03-05T20:00:00"),
-      description: "Tennis",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-    {
-      id: "8",
-      startTime: new Date("2020-03-01T08:00:00"),
-      endTime: new Date("2020-03-01T12:00:00"),
-      description: "Futsal",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-    {
-      id: "9",
-      startTime: new Date("2020-03-02T12:00:00"),
-      endTime: new Date("2020-03-02T15:00:00"),
-      description: "Badminton",
-      latitude: "12.915555",
-      longitude: "77.21146",
-    },
-  ]);
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const addActivity = (newActivity) => {
-    setActivities((prevActivities) => [...prevActivities, newActivity]);
+  const { currUser } = useContext(UserContext);
+
+  useEffect(() => {
+    const fetchActivity = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8000/activities?userId=${currUser.id}`
+        );
+        const data = await res.json();
+
+        // Konversi format String di JSON ke Date
+        const formattedData = data.map((activity) => ({
+          ...activity,
+          startTime: new Date(activity.startTime),
+          endTime: new Date(activity.endTime),
+        }));
+
+        setActivities(formattedData);
+      } catch (error) {
+        console.log("Error Fetching Data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivity();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log("Updated activities:", activities);
+  // }, [activities]);
+
+  // Add Activity
+  const addActivity = async (newActivity) => {
+    const res = await fetch("http://localhost:8000/activities", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newActivity),
+    });
+    return;
   };
 
-  const deleteActivity = (id) => {
-    setActivities((prevActivities) =>
-      prevActivities.filter((activity) => activity.id !== id)
-    );
+  // Delete Activity
+  const deleteActivity = async (id) => {
+    const res = await fetch(`http://localhost:8000/activities/${id}`, {
+      method: "DELETE",
+    });
+    return;
   };
 
-  const getActivity = (id) => {
-    return activities.find((activity) => activity.id === id);
+  // Update Activity
+  const updateActivity = async (activity) => {
+    const res = await fetch(`http://localhost:8000/activities/${activity.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(activity),
+    });
+    return;
   };
 
-  const updateActivity = (updatedActivity) => {
-    setActivities((prevActivities) =>
-      prevActivities.map((activity) =>
-        activity.id === updatedActivity.id ? updatedActivity : activity
-      )
-    );
-  };
   return (
     <ActivityContext.Provider
       value={{
         activities,
         addActivity,
         deleteActivity,
-        getActivity,
         updateActivity,
       }}
     >

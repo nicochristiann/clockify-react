@@ -8,14 +8,15 @@ const Locations = ({
   setLongitude,
   isEdit,
 }) => {
-  useEffect(() => {
-    if (navigator.geolocation && !isEdit) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-      });
-    }
-  }, []);
+  !isEdit &&
+    useEffect(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+        });
+      }
+    }, []);
 
   return (
     <div className="relative flex flex-row items-center w-[100%]">

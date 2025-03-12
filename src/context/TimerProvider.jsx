@@ -11,7 +11,7 @@ const TimerProvider = ({ children }) => {
   };
 
   const timerFormat = (time) => {
-    const hour = Math.floor(time / 60 / 60) % 24;
+    const hour = Math.floor(time / 60 / 60);
     const minute = Math.floor(time / 60) % 60;
     const second = Math.floor(time % 60);
 

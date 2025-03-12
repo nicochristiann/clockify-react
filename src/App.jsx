@@ -7,6 +7,7 @@ import TimerPage from "./pages/TimerPage.jsx";
 import ActivityPage from "./pages/ActivityPage.jsx";
 import EditActivityPage from "./pages/EditActivityPage.jsx";
 import MainLayout from "./layout/MainLayout.jsx";
+import Navbar from "./components/Navbar.jsx";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<MainLayout />}>
+          {/* <Route index element={<TimerPage />} /> */}
           <Route path="/timer" element={<TimerPage />} />
           <Route path="/activity" element={<ActivityPage />} />
           <Route path="/edit-activity/:id" element={<EditActivityPage />} />
