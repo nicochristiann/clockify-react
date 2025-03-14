@@ -1,75 +1,99 @@
 {
   "activities": [
     {
-      "id": "4f8c4d9e-3b92-4a13-b8c2-6b7f3e1d0e8a",
+      "id": "6f2b5e44-8c69-4f94-9d36-d7a0d8a5e0b3",
       "startTime": "2020-03-01 12:00:00",
       "endTime": "2020-03-01 13:00:00",
       "description": "Badminton",
-      "latitude": "12.915555",
-      "longitude": "77.21146"
+      "latitude": "12.9155545",
+      "longitude": "78.2214236",
+      "createdAt": "2020-03-01 13:00:00",
+      "updatedAt": "2020-03-01 13:00:00",
+      "userId": "4f8c4d9e-3b92-4a13-b8c2-6b7f3e1d0e8a"
     },
     {
       "id": "9d7a3bfc-5126-4e5b-84d2-1a7b9f5e0a45",
       "startTime": "2020-03-02 12:00:00",
       "endTime": "2020-03-02 12:30:00",
       "description": "Futsal",
-      "latitude": "12.915555",
-      "longitude": "77.21146"
+      "latitude": "-10.676755",
+      "longitude": "7.2132451",
+      "createdAt": "2020-03-02 12:30:00",
+      "updatedAt": "2020-03-02 12:30:00",
+      "userId": "4f8c4d9e-3b92-4a13-b8c2-6b7f3e1d0e8a"
     },
     {
       "id": "f3b1a2c6-7983-4d8f-bbde-2c1e3a5d6f9b",
       "startTime": "2020-03-01 11:00:00",
       "endTime": "2020-03-01 12:00:00",
       "description": "Basket",
-      "latitude": "12.915555",
-      "longitude": "77.21146"
+      "latitude": "1.19824588",
+      "longitude": "8.461453624",
+      "createdAt": "2020-03-01 12:00:00",
+      "updatedAt": "2020-03-01 12:00:00",
+      "userId": "f3b1a2c6-7983-4d8f-bbde-2c1e3a5d6f9b"
     },
     {
       "id": "71f8c5d3-9a74-4e2d-8c6b-1f4b3d7e0a92",
       "startTime": "2020-03-05 18:00:00",
       "endTime": "2020-03-05 20:00:00",
       "description": "Tennis",
-      "latitude": "12.915555",
-      "longitude": "77.21146"
+      "latitude": "-12.47464574",
+      "longitude": "71.12323464",
+      "createdAt": "2020-03-05 20:00:00",
+      "updatedAt": "2020-03-05 20:00:00",
+      "userId": "f3b1a2c6-7983-4d8f-bbde-2c1e3a5d6f9b"
     },
     {
       "id": "d6e2a1f4-3c9b-4b7d-98f3-5a0e7c2d1b8a",
-      "startTime": "2020-03-01 08:00:00",
-      "endTime": "2020-03-01 12:00:00",
-      "description": "Futsal",
-      "latitude": "12.915555",
-      "longitude": "77.21146"
+      "startTime": "2020-03-01T01:00:00.000Z",
+      "endTime": "2020-03-01T04:00:00.000Z",
+      "description": "FUTSAL",
+      "latitude": "9.09234145",
+      "longitude": "-10.11078921",
+      "createdAt": "2020-03-01T05:00:00.000Z",
+      "updatedAt": "2025-03-12T07:19:36.422Z",
+      "userId": ""
     },
     {
       "id": "82f4c3b9-7d16-4e2a-9b5d-0c1e8a7f3d6b",
-      "startTime": "2020-03-02 12:00:00",
-      "endTime": "2020-03-02 15:00:00",
+      "startTime": "2020-03-02T05:00:00.000Z",
+      "endTime": "2020-03-02T08:00:00.000Z",
       "description": "Badminton",
-      "latitude": "12.915555",
-      "longitude": "77.21146"
+      "latitude": "12.915123555",
+      "longitude": "77.2145645146",
+      "createdAt": "2020-03-02T08:00:00.000Z",
+      "updatedAt": "2025-03-12T03:16:36.151Z",
+      "userId": ""
     },
     {
       "id": "a3e9b2d4-5f7c-4d81-9a6b-0c2f8e1d7b45",
       "startTime": "2020-03-01 08:00:00",
       "endTime": "2020-03-01 12:00:00",
       "description": "Futsal",
-      "latitude": "12.915555",
-      "longitude": "77.21146"
+      "latitude": "61.11280981",
+      "longitude": "31.6912898",
+      "createdAt": "2020-03-01 12:00:00",
+      "updatedAt": "2020-03-01 12:00:00",
+      "userId": "9d7a3bfc-5126-4e5b-84d2-1a7b9f5e0a45"
     },
     {
       "id": "5b9a3d7c-2f81-4e6d-8b0a-1f4c3e2d7a65",
-      "startTime": "2020-03-02 12:00:00",
-      "endTime": "2020-03-02 15:00:00",
+      "startTime": "2020-03-02T05:00:00.000Z",
+      "endTime": "2020-03-02T06:00:00.000Z",
       "description": "Badminton",
-      "latitude": "12.915555",
-      "longitude": "77.21146"
+      "latitude": "69.98452187",
+      "longitude": "-32.10782174",
+      "createdAt": "2020-03-02T08:00:00.000Z",
+      "updatedAt": "2025-03-12T03:14:18.117Z",
+      "userId": ""
     }
   ],
   "users": [
     {
       "id": "4f8c4d9e-3b92-4a13-b8c2-6b7f3e1d0e8a",
       "email": "user1@gmail.com",
-      "password": "password1",
+      "password": "user1Test!",
       "verified": "true",
       "createdAt": "2025-03-09T12:00:00.000Z",
       "updatedAt": "2025-03-09T12:00:00.000Z"
@@ -77,7 +101,7 @@
     {
       "id": "9d7a3bfc-5126-4e5b-84d2-1a7b9f5e0a45",
       "email": "user2@gmail.com",
-      "password": "password2",
+      "password": "user2Test!",
       "verified": "true",
       "createdAt": "2025-03-09T12:00:00.000Z",
       "updatedAt": "2025-03-09T12:00:00.000Z"
@@ -85,7 +109,7 @@
     {
       "id": "f3b1a2c6-7983-4d8f-bbde-2c1e3a5d6f9b",
       "email": "user3@gmail.com",
-      "password": "password3",
+      "password": "user3Test!",
       "verified": "true",
       "createdAt": "2025-03-09T12:00:00.000Z",
       "updatedAt": "2025-03-09T12:00:00.000Z"

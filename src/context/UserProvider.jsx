@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import Cookie from "js-cookie";
 
 export const UserContext = createContext();
 
@@ -7,57 +8,73 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const [currUser, setCurrUser] = useState({
-    id: "",
+    uuid: "",
     email: "",
-    password: "",
-    verified: "",
-    createdAt: new Date(),
-    updatedAt: new Date(),
   });
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch("http://localhost:8000/users");
-        const data = await res.json();
+    const token = Cookie.get("token");
+    const storedUser = localStorage.getItem("currUser");
 
-        // Konversi format String di JSON ke Date
-        const formattedData = data.map((user) => ({
-          ...user,
-          createdAt: new Date(user.createdAt),
-          updatedAt: new Date(user.updatedAt),
-        }));
-
-        setUsers(formattedData);
-      } catch (error) {
-        console.log("Error Fetching Data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsers();
+    if (token && storedUser) {
+      setCurrUser(JSON.parse(storedUser));
+    } else {
+      setCurrUser(null);
+    }
   }, []);
 
   // Register User
-  const register = async (newUser) => {
-    const res = await fetch("http://localhost:8000/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newUser),
-    });
+  const register = async ({ email, password }, setStatus) => {
+    // const res = await fetch("http://localhost:8000/users", {
+    try {
+      // console.log(newUser);
+      const res = await fetch(
+        "https://light-master-eagle.ngrok-free.app/api/v1/user/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+      const data = await res.json();
+      setStatus(data.status);
+    } catch (error) {
+      console.log("Error Register", error);
+      setStatus("failed");
+    }
     return;
   };
 
   // Login (set current user)
-  const login = (email, password) => {
-    const findUser = user.find(
-      (item) => item.email === email && item.password === password
-    );
-    if (findUser) {
-      setCurrUser(findUser);
-      return true;
+  const login = async (user) => {
+    try {
+      const res = await fetch(
+        // diganti ke proxy nnti
+        // `http://localhost:8000/users?email=${email}&password=${password}`,
+        // `http://localhost:3000/api/v1/user/login`,
+        `https://light-master-eagle.ngrok-free.app/api/v1/user/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user),
+        }
+      );
+      const data = await res.json();
+
+      if (!data) return;
+
+      // // Simpan token ke cookies (berlaku selama 1 hari)
+      Cookie.set("token", data.token, { expires: 1 });
+      console.log("Token :", Cookie.get("token"));
+
+      // Simpan user ke localStorage
+      localStorage.setItem("currUser", JSON.stringify(data.user));
+      setCurrUser(data.user);
+    } catch (error) {
+      console.log("Error Fetching Data", error);
+    } finally {
+      setLoading(false);
     }
-    return false;
   };
 
   return (

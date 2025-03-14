@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import searchImg from "../assets/Clockify/Search.svg";
 import dropdown from "../assets/Clockify/Dropdown-white.png";
+import { ActivityContext } from "../context/ActivityProvider";
 
-const ActivityInput = ({ sortChoice, setSortChoice, search, setSearch }) => {
+const ActivityInput = ({ sortChoice, setSortChoice }) => {
   const [isDown, setIsDown] = useState(false);
-
+  const { keyword, setKeyword } = useContext(ActivityContext);
   return (
     <>
       <form className="flex flex-col gap-5 w-[100%]">
@@ -17,9 +18,9 @@ const ActivityInput = ({ sortChoice, setSortChoice, search, setSearch }) => {
               name="search"
               id="search"
               placeholder="Search activity"
-              value={search}
+              value={keyword}
               onChange={(e) => {
-                setSearch(e.target.value);
+                setKeyword(e.target.value);
               }}
               onKeyDown={(e) => {
                 e.key === "Enter";
@@ -70,15 +71,6 @@ const ActivityInput = ({ sortChoice, setSortChoice, search, setSearch }) => {
                   }}
                 >
                   Latest Date
-                </li>
-                <li
-                  className="px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-xl"
-                  onClick={() => {
-                    setSortChoice("Oldest Date");
-                    setIsDown(false);
-                  }}
-                >
-                  Oldest Date
                 </li>
                 <li
                   className="px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-xl"

@@ -4,7 +4,8 @@ import key from "../assets/Clockify/Key.svg";
 import eyeOn from "../assets/Clockify/Icon/Back-white-1.png";
 import eyeOff from "../assets/Clockify/Icon/Eye-Off.png";
 
-const PasswordBox = ({ password, setPassword, isConfirm }) => {
+// const PasswordBox = ({ password, setPassword, isConfirm }) => {
+const PasswordBox = ({ isConfirm, password, handleChange, handleBlur }) => {
   const [showPass, setShowPass] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -12,7 +13,7 @@ const PasswordBox = ({ password, setPassword, isConfirm }) => {
     setIsFocused(true);
   };
 
-  const handleBlur = (e) => {
+  const fieldBlur = (e) => {
     e.target.value === "" && setIsFocused(false);
   };
 
@@ -27,6 +28,8 @@ const PasswordBox = ({ password, setPassword, isConfirm }) => {
       return "Input Your Password";
     }
   };
+
+  const pass = isConfirm ? "confirmPassword" : "password";
   return (
     <>
       <div className="flex gap-3 h-9">
@@ -38,11 +41,15 @@ const PasswordBox = ({ password, setPassword, isConfirm }) => {
             <input
               className="focus:outline-none absolute border-b-[1px] w-[100%] p-2 border-white text-white"
               type={showPass ? "text" : "password"}
-              id={isConfirm ? "confrimPassword" : "password"}
+              id={pass}
               onFocus={handleFocus}
-              onBlur={handleBlur}
+              onBlur={(e) => {
+                fieldBlur(e);
+                handleBlur;
+              }}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
+              name={pass}
             />
             <label
               className={`absolute left-2 text-md cursor-text transition-all duration-200 ${
@@ -50,8 +57,8 @@ const PasswordBox = ({ password, setPassword, isConfirm }) => {
                   ? "top-[-22px] text-sm text-white"
                   : "top-2 text-md text-gray-300"
               }`}
-              htmlFor={isConfirm ? "confrimPassword" : "password"}
-              id={isConfirm ? "confrimPasswordLabel" : "passwordLabel"}
+              htmlFor={pass}
+              id={pass}
             >
               {handleShow()}
             </label>

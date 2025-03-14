@@ -5,13 +5,19 @@ import Dates from "../components/Dates";
 import Activity from "../components/Activity";
 import { ActivityContext } from "../context/ActivityProvider";
 import { TimerContext } from "../context/TimerProvider";
+import { UserContext } from "../context/UserProvider";
+import { useNavigate } from "react-router";
 
 const ActivityPage = () => {
-  const { activities } = useContext(ActivityContext);
+  const { activities, getLatestActivity, getNearbyActivity } =
+    useContext(ActivityContext);
   const { timer, getSeconds } = useContext(TimerContext);
   const [sortActivity, setSortActivity] = useState([]);
   const [sortChoice, setSortChoice] = useState("Latest Date");
-  const [search, setSearch] = useState("");
+
+  const { currUser } = useContext(UserContext);
+  // console.log(currUser);
+  // const navigate = useNavigate();
 
   useEffect(() => {
     sorted(sortChoice);
@@ -20,32 +26,15 @@ const ActivityPage = () => {
   const sorted = (choice) => {
     switch (choice) {
       case "Latest Date":
-        sortDescending();
-        break;
-      case "Oldest Date":
-        sortAscending();
+        getLatestActivity();
         break;
       case "Nearby":
-        // Belom
+        getNearbyActivity();
         break;
       default:
         break;
     }
   };
-
-  // Descending
-  const sortDescending = () => {
-    const sort = [...activities].sort((a, b) => b.startTime - a.startTime);
-    setSortActivity(sort);
-  };
-
-  // Ascending
-  const sortAscending = () => {
-    const sort = [...activities].sort((a, b) => a.startTime - b.startTime);
-    setSortActivity(sort);
-  };
-
-  // Nearby
 
   const isSameDate = (date1, date2) => {
     return (
@@ -76,8 +65,6 @@ const ActivityPage = () => {
             <p className="text-white text-4xl mb-15">Activity</p>
             <div className="mb-15 w-[60vw]">
               <ActivityInput
-                search={search}
-                setSearch={setSearch}
                 sortChoice={sortChoice}
                 setSortChoice={setSortChoice}
               />

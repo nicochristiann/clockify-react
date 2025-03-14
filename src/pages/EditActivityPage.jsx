@@ -38,12 +38,17 @@ const EditActivityPage = () => {
 
   const navigation = useNavigate();
 
+  useEffect(() => {
+    currUser.id === "" && navigation("/login");
+  });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/activities/${id}`);
+        // const res = await fetch(`http://localhost:8000/activities/${id}`);
+        const res = await fetch(`/api/v1/activity/${id}`);
         const data = await res.json();
 
         // Konversi format String di JSON ke Date

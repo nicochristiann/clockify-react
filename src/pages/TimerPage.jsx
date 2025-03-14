@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import Timer from "../components/Timer";
 
 const TimerPage = () => {

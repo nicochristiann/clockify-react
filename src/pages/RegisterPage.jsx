@@ -1,21 +1,50 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import logo from "../assets/Clockify/Logo.png";
 import PasswordBox from "../components/PasswordBox";
 import EmailBox from "../components/EmailBox";
 import RegisterSuccess from "../components/RegisterSuccess";
+import { useFormik } from "formik";
+import { RegisterSchema } from "../schema/UserSchema";
+import { UserContext } from "../context/UserProvider";
 
 const RegisterPage = () => {
+  const { register } = useContext(UserContext);
+  const [status, setStatus] = useState("");
+
+  const handleRegister = (e) => {
+    register(values, setStatus);
+  };
+
+  useEffect(() => {
+    if (status === "success") {
+      setTimeout(() => {
+        setIsRegister(true);
+      }, 1000);
+    }
+  }, [status]);
+
+  const { values, errors, handleBlur, handleChange, handleSubmit } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    onSubmit: handleRegister,
+    validationSchema: RegisterSchema,
+  });
+
+  // console.log(errors);
+
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   return (
     <>
       {isRegister && (
         <div className="absolute z-20 h-[100vh] w-[100vw] bg-[rgba(0,0,0,0.5)]">
           <div
-            className={`absolute w-[35vw] top-[30vh] left-[32vw] flex flex-col items-center rounded-2xl bg-white`}
+            className={`absolute w-[40vw] top-[30vh] left-[30vw] flex flex-col items-center rounded-2xl bg-white transition-all duration-200 transform ${
+              isRegister ? "opacity-100 scale-100" : "opacity-0 scale-90"
+            }`}
           >
             <RegisterSuccess />
           </div>
@@ -28,27 +57,53 @@ const RegisterPage = () => {
               <img className="w-auto h-13" src={logo} alt="Logo.png" />
             </div>
             <div>
-              <form className="flex flex-col gap-10">
-                <EmailBox email={email} setEmail={setEmail} />
-                <PasswordBox
-                  isConfirm={false}
-                  password={password}
-                  setPassword={setPassword}
-                />
-                <PasswordBox
-                  isConfirm={true}
-                  confirmPassword={confirmPassword}
-                  setConfirmPassword={setConfirmPassword}
-                />
+              <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
+                <div className="relative flex flex-col mb-5">
+                  <EmailBox
+                    email={values.email}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                  />
+                  <label
+                    htmlFor="email"
+                    className="text-red-400 text-sm absolute top-11 left-12"
+                  >
+                    {errors.email}
+                  </label>
+                </div>
+                <div className="relative flex flex-col mb-5">
+                  <PasswordBox
+                    isConfirm={false}
+                    password={values.password}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                  />
+                  <label
+                    htmlFor="password"
+                    className="text-red-400 text-sm absolute top-11 left-12"
+                  >
+                    {errors.password}
+                  </label>
+                </div>
+                <div className="relative flex flex-col mb-5">
+                  <PasswordBox
+                    isConfirm={true}
+                    confirmPassword={values.confirmPassword}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                  />
+                  <label
+                    htmlFor="confirmPassword"
+                    className="text-red-400 text-sm absolute top-11 left-12"
+                  >
+                    {errors.confirmPassword}
+                  </label>
+                </div>
 
-                {/* Create Account */}
                 <div className="flex flex-col items-center gap-5 mt-10">
                   <button
+                    type="submit"
                     className="bg-[#2EBED9] px-20 py-3 rounded-xl text-white cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsRegister(true);
-                    }}
                   >
                     CREATE YOUR ACCOUNT
                   </button>

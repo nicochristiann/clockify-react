@@ -6,7 +6,6 @@ import TimerButtons from "./TimerButtons";
 import TextArea from "./TextArea";
 import StartEndTime from "./StartEndTime";
 import { TimerContext } from "../context/TimerProvider";
-import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../context/UserProvider";
 
 const Timer = () => {
@@ -18,15 +17,14 @@ const Timer = () => {
   const [endDate, setEndDate] = useState("");
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
   const [description, setDescription] = useState("");
 
   const [eventState, setEventState] = useState("start");
   const timeId = useRef();
 
   // Context
-  const { addActivity } = useContext(ActivityContext);
+  const { addActivity, latitude, longitude, setLatitude, setLongitude } =
+    useContext(ActivityContext);
   const { timerFormat, dateFormat, timer } = useContext(TimerContext);
   const { currUser } = useContext(UserContext);
 
@@ -40,15 +38,12 @@ const Timer = () => {
     }
 
     const newActivity = {
-      id: uuidv4(),
-      startTime: startDateTime,
-      endTime: endDateTime,
       description: description,
-      latitude: latitude.toString(),
-      longitude: longitude.toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: currUser.id,
+      start_time: startDateTime,
+      end_time: endDateTime,
+      location_lat: Number(latitude),
+      location_lng: Number(longitude),
+      user_uuid: currUser.uuid,
     };
     addActivity(newActivity);
     navigation("/activity");
@@ -94,11 +89,6 @@ const Timer = () => {
     }
   };
 
-  const buttonBlue =
-    "bg-[#2EBED9] w-40 py-3 rounded-xl text-white cursor-pointer";
-  const buttonWhite =
-    "bg-white w-40 py-3 rounded-xl text-[#A7A6C5] cursor-pointer";
-
   return (
     <>
       <section>
@@ -126,10 +116,11 @@ const Timer = () => {
             {/* Location */}
             <div className="w-[350px] h-13 flex flex-col items-center justify-center bg-[#434B8C] rounded-xl shadow-md p-4 mb-10">
               <Locations
-                latitude={latitude}
-                setLatitude={setLatitude}
                 longitude={longitude}
                 setLongitude={setLongitude}
+                latitude={latitude}
+                setLatitude={setLatitude}
+                isEdit={false}
               />
             </div>
 
