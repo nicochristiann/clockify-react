@@ -1,6 +1,6 @@
 import React from "react";
 
-const TextArea = ({ description, setDescription, setCurrActivity }) => {
+const TextArea = ({ description, setDescription, isEdit, setCurrActivity }) => {
   return (
     <textarea
       id="activity"
@@ -12,10 +12,11 @@ const TextArea = ({ description, setDescription, setCurrActivity }) => {
         setDescription(e.target.value);
       }}
       onBlur={(e) => {
-        setCurrActivity((prev) => ({
-          ...prev,
-          description: e.target.value,
-        }));
+        isEdit &&
+          setCurrActivity((prev) => ({
+            ...prev,
+            description: e.target.value,
+          }));
       }}
       onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
     />

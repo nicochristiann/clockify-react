@@ -4,9 +4,7 @@ import Cookie from "js-cookie";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-
+  // const [loading, setLoading] = useState(true);
   const [currUser, setCurrUser] = useState({
     uuid: "",
     email: "",
@@ -25,61 +23,87 @@ export const UserProvider = ({ children }) => {
 
   // Register User
   const register = async ({ email, password }, setStatus) => {
-    // const res = await fetch("http://localhost:8000/users", {
-    try {
-      // console.log(newUser);
-      const res = await fetch(
-        "https://light-master-eagle.ngrok-free.app/api/v1/user/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
-      const data = await res.json();
-      setStatus(data.status);
-    } catch (error) {
-      console.log("Error Register", error);
-      setStatus("failed");
-    }
+    // console.log(newUser);
+    const res = await fetch(
+      "https://light-master-eagle.ngrok-free.app/api/v1/user/register",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      }
+    );
+    const data = await res.json();
+    setStatus(data.status);
     return;
   };
 
   // Login (set current user)
   const login = async (user) => {
-    try {
-      const res = await fetch(
-        // diganti ke proxy nnti
-        // `http://localhost:8000/users?email=${email}&password=${password}`,
-        // `http://localhost:3000/api/v1/user/login`,
-        `https://light-master-eagle.ngrok-free.app/api/v1/user/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(user),
-        }
-      );
-      const data = await res.json();
+    const res = await fetch(
+      "https://light-master-eagle.ngrok-free.app/api/v1/user/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+      }
+    );
+    // Debugging
+    console.log("Raw Response:", res);
+    console.log("Status Response:", res.status);
+    console.log("Header Response:", res.headers.get("content-type"));
+    // console.log(res);
+    const data = await res.json();
+    // console.log(data);
 
-      if (!data) return;
+    if (!data) return;
 
-      // // Simpan token ke cookies (berlaku selama 1 hari)
-      Cookie.set("token", data.token, { expires: 1 });
-      console.log("Token :", Cookie.get("token"));
+    // // Simpan token ke cookies (berlaku selama 1 hari)
+    Cookie.set("token", data.token, { expires: 1 });
 
-      // Simpan user ke localStorage
-      localStorage.setItem("currUser", JSON.stringify(data.user));
-      setCurrUser(data.user);
-    } catch (error) {
-      console.log("Error Fetching Data", error);
-    } finally {
-      setLoading(false);
-    }
+    // Simpan user ke localStorage
+    localStorage.setItem("currUser", JSON.stringify(data.user));
+    setCurrUser(data.user);
+  };
+
+  const forgotPassword = async (email) => {
+    const res = await fetch(
+      "https://light-master-eagle.ngrok-free.app/api/v1/user/forgotpassword",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }
+    );
+    const data = await res.json();
+    console.log(data);
+  };
+
+  const resetPassword = async (resetToken, newPassword, confirmPassword) => {
+    const res = await fetch(
+      "https://light-master-eagle.ngrok-free.app/api/v1/user/resetpassword",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ resetToken, newPassword, confirmPassword }),
+      }
+    );
+    const data = await res.json();
+    console.log(data);
+    return;
   };
 
   return (
     <UserContext.Provider
-      value={{ currUser, setCurrUser, users, setUsers, register, login }}
+      value={{
+        currUser,
+        setCurrUser,
+        register,
+        login,
+        resetPassword,
+        forgotPassword,
+      }}
     >
       {children}
     </UserContext.Provider>

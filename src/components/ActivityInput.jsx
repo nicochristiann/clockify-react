@@ -5,7 +5,8 @@ import { ActivityContext } from "../context/ActivityProvider";
 
 const ActivityInput = ({ sortChoice, setSortChoice }) => {
   const [isDown, setIsDown] = useState(false);
-  const { keyword, setKeyword } = useContext(ActivityContext);
+  const { keyword, setKeyword, getSearchActivity } =
+    useContext(ActivityContext);
   return (
     <>
       <form className="flex flex-col gap-5 w-[100%]">
@@ -23,14 +24,16 @@ const ActivityInput = ({ sortChoice, setSortChoice }) => {
                 setKeyword(e.target.value);
               }}
               onKeyDown={(e) => {
-                e.key === "Enter";
+                e.key === "Enter" && getSearchActivity();
               }}
             />
             <img
               className="absolute h-11 w-auto right-1 top-2 cursor-pointer"
               src={searchImg}
               alt=""
-              onClick={() => {}}
+              onClick={() => {
+                getSearchActivity();
+              }}
             />
           </div>
 

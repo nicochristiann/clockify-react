@@ -11,14 +11,17 @@ import { UserContext } from "../context/UserProvider";
 
 const EditActivityPage = () => {
   const { id } = useParams();
-  const [currActivity, setCurrActivity] = useState({
-    id: "",
-    startTime: new Date(),
-    endTime: new Date(),
-    description: "",
-    latitude: "",
-    longitude: "",
-  });
+
+  // Context
+  const { updateActivity, setCurrActivity, getActivity, currActivity } =
+    useContext(ActivityContext);
+  const { dateFormat, timer, getSeconds } = useContext(TimerContext);
+  const { currUser } = useContext(UserContext);
+
+  // Get An Activity
+  useEffect(() => {
+    getActivity(id);
+  }, [id]);
 
   const [time, setTime] = useState(0);
   const [startTime, setStartTime] = useState("");
@@ -31,62 +34,21 @@ const EditActivityPage = () => {
   const [longitude, setLongitude] = useState(null);
   const [description, setDescription] = useState("");
 
-  // Context
-  const { updateActivity } = useContext(ActivityContext);
-  const { dateFormat, timer, getSeconds } = useContext(TimerContext);
-  const { currUser } = useContext(UserContext);
-
-  const navigation = useNavigate();
-
   useEffect(() => {
-    currUser.id === "" && navigation("/login");
-  });
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchActivity = async () => {
-      try {
-        // const res = await fetch(`http://localhost:8000/activities/${id}`);
-        const res = await fetch(`/api/v1/activity/${id}`);
-        const data = await res.json();
-
-        // Konversi format String di JSON ke Date
-        const formattedData = {
-          id: data.id,
-          startTime: new Date(data.startTime),
-          endTime: new Date(data.endTime),
-          description: data.description,
-          latitude: data.latitude,
-          longitude: data.longitude,
-          createdAt: new Date(data.createdAt),
-          updatedAt: new Date(data.updatedAt),
-          userId: currUser.id,
-        };
-
-        setCurrActivity(formattedData);
-      } catch (error) {
-        console.error("Error Fetching Data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchActivity();
-  }, []);
-
-  useEffect(() => {
-    setTime(getSeconds(currActivity.startTime, currActivity.endTime));
-    setStartTime(timer(currActivity.startTime));
-    setEndTime(timer(currActivity.endTime));
-    setStartDate(dateFormat(currActivity.startTime));
-    setEndDate(dateFormat(currActivity.endTime));
-    setStartDateTime(currActivity.startTime);
-    setEndDateTime(currActivity.endTime);
-    setLatitude(currActivity.latitude);
-    setLongitude(currActivity.longitude);
+    setTime(getSeconds(currActivity.start_time, currActivity.end_time));
+    setStartTime(timer(currActivity.start_time));
+    setEndTime(timer(currActivity.end_time));
+    setStartDate(dateFormat(currActivity.start_time));
+    setEndDate(dateFormat(currActivity.end_time));
+    setStartDateTime(currActivity.start_time);
+    setEndDateTime(currActivity.end_time);
+    setLatitude(currActivity.location_lat);
+    setLongitude(currActivity.location_lng);
     setDescription(currActivity.description);
-    console.log(currActivity);
+    // console.log(currActivity);
   }, [currActivity]);
+
+  const { mutate } = updateActivity;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -101,18 +63,19 @@ const EditActivityPage = () => {
     if (!confirm) return;
 
     const updatedActivity = {
-      id: currActivity.id,
-      startTime: startDateTime,
-      endTime: endDateTime,
+      uuid: currActivity.uuid,
+      user_uuid: currUser.uuid,
+      start_time: startDateTime,
+      end_time: endDateTime,
       description: description,
-      latitude: currActivity.latitude,
-      longitude: currActivity.longitude,
-      createdAt: currActivity.createdAt,
+      location_lat: currActivity.location_lat,
+      location_lng: currActivity.location_lng,
+      created_at: currActivity.created_at,
       updatedAt: new Date(),
-      userId: currUser.id,
     };
     // console.log(updateActivity);
-    updateActivity(updatedActivity);
+    // updateActivity(updatedActivity);
+    mutate(updatedActivity);
     navigation("/activity");
   };
 
@@ -124,9 +87,9 @@ const EditActivityPage = () => {
         <div className="fixed inset-0 z-10 flex items-center justify-center bg-[rgba(0,0,0,0.2)] backdrop-blur-[10px]">
           <div>
             <EditTime
-              startDateTime={currActivity.startTime}
+              startDateTime={currActivity.start_time}
               setStartDateTime={setStartDateTime}
-              endDateTime={currActivity.endTime}
+              endDateTime={currActivity.end_time}
               setEndDateTime={setEndDateTime}
               setEndDate={setEndDate}
               setIsEditing={setIsEditing}
@@ -179,6 +142,7 @@ const EditActivityPage = () => {
               <TextArea
                 description={description}
                 setDescription={setDescription}
+                isEdit={true}
                 setCurrActivity={setCurrActivity}
               />
             </div>

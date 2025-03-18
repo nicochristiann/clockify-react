@@ -11,6 +11,8 @@ import VerifyEmail from "./pages/VerifyEmail.jsx";
 import CredentialRoute from "./route/CredentialRoutes.jsx";
 import ProtectedRoute from "./route/ProtectedRoutes.jsx";
 import Cookie from "js-cookie";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 
 const App = () => {
   useEffect(() => {
@@ -25,6 +27,8 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
 
         {/* Halaman yang bisa diakses jika login */}

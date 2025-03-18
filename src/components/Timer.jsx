@@ -6,7 +6,6 @@ import TimerButtons from "./TimerButtons";
 import TextArea from "./TextArea";
 import StartEndTime from "./StartEndTime";
 import { TimerContext } from "../context/TimerProvider";
-import { UserContext } from "../context/UserProvider";
 
 const Timer = () => {
   const [time, setTime] = useState(0);
@@ -26,7 +25,8 @@ const Timer = () => {
   const { addActivity, latitude, longitude, setLatitude, setLongitude } =
     useContext(ActivityContext);
   const { timerFormat, dateFormat, timer } = useContext(TimerContext);
-  const { currUser } = useContext(UserContext);
+
+  const { mutate } = addActivity;
 
   const navigation = useNavigate();
 
@@ -43,10 +43,10 @@ const Timer = () => {
       end_time: endDateTime,
       location_lat: Number(latitude),
       location_lng: Number(longitude),
-      user_uuid: currUser.uuid,
     };
-    addActivity(newActivity);
-    navigation("/activity");
+    // addActivity(newActivity);
+    mutate(newActivity);
+    // navigation("/activity");
   };
 
   useEffect(() => {
@@ -129,6 +129,7 @@ const Timer = () => {
               <TextArea
                 description={description}
                 setDescription={setDescription}
+                isEdit={false}
               />
             </div>
 

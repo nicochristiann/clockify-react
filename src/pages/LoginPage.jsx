@@ -71,7 +71,7 @@ const LoginPage = () => {
                 {/* Forgot Password */}
                 <div className="flex justify-end mb">
                   <Link
-                    to="/"
+                    to="/forgot-password"
                     className="underline text-gray-500 hover:text-white transition duration-120 ease-in"
                   >
                     Forgot password?

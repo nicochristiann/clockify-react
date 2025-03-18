@@ -5,7 +5,13 @@ import eyeOn from "../assets/Clockify/Icon/Back-white-1.png";
 import eyeOff from "../assets/Clockify/Icon/Eye-Off.png";
 
 // const PasswordBox = ({ password, setPassword, isConfirm }) => {
-const PasswordBox = ({ isConfirm, password, handleChange, handleBlur }) => {
+const PasswordBox = ({
+  isConfirm,
+  password,
+  handleChange,
+  handleBlur,
+  isReset,
+}) => {
   const [showPass, setShowPass] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -18,18 +24,27 @@ const PasswordBox = ({ isConfirm, password, handleChange, handleBlur }) => {
   };
 
   const handleShow = () => {
-    if (isConfirm && isFocused) {
+    if (isConfirm && isFocused && !isReset) {
       return "Confirm Password";
-    } else if (isConfirm && !isFocused) {
+    } else if (isConfirm && !isFocused && !isReset) {
       return "Confirm Your Password";
-    } else if (!isConfirm && isFocused) {
+    } else if (!isConfirm && isFocused && !isReset) {
       return "Password";
-    } else if (!isConfirm && !isFocused) {
+    } else if (!isConfirm && !isFocused && !isReset) {
       return "Input Your Password";
+    } else if (isConfirm && isFocused && isReset) {
+      return "Confirm New Password";
+    } else if (isConfirm && !isFocused && isReset) {
+      return "Confirm Your New Password";
+    } else if (!isConfirm && isFocused && isReset) {
+      return "New Password";
+    } else if (!isConfirm && !isFocused && isReset) {
+      return "Input Your New Password";
     }
   };
 
   const pass = isConfirm ? "confirmPassword" : "password";
+
   return (
     <>
       <div className="flex gap-3 h-9">

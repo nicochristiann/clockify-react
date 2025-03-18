@@ -16,7 +16,7 @@ const Locations = ({
           setLongitude(position.coords.longitude);
         });
       }
-    }, []);
+    }, [latitude, longitude]);
 
   return (
     <div className="relative flex flex-row items-center w-[100%]">

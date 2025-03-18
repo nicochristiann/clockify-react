@@ -8,6 +8,8 @@ const Activity = ({ activity, duration, startTime, endTime }) => {
   const { deleteActivity } = useContext(ActivityContext);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const { mutate } = deleteActivity;
+
   const onDeleteClick = (activityId) => {
     const confirm = window.confirm(
       "Are you sure you want to delete this activity?"
@@ -18,7 +20,8 @@ const Activity = ({ activity, duration, startTime, endTime }) => {
 
     // 0.5s sebelum data terhapus, dikasi animasi
     setTimeout(() => {
-      deleteActivity(activityId);
+      // deleteActivity(activityId);
+      mutate(activityId);
     }, 500);
   };
 

@@ -10,11 +10,14 @@ function VerifyEmail() {
       try {
         const params = new URLSearchParams(location.search);
         const emailToken = params.get("emailToken");
-        const res = await fetch("http://localhost:3000/api/user/verifyemail", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ emailToken }),
-        });
+        const res = await fetch(
+          `https://light-master-eagle.ngrok-free.app/api/v1/user/verifyemail?emailToken=${emailToken}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ emailToken }),
+          }
+        );
 
         const data = await res.json();
 
@@ -28,7 +31,7 @@ function VerifyEmail() {
       }
     };
     handle();
-  }, [searchParams]);
+  }, []);
 
   return (
     <div className="flex w-full h-full justify-center items-center">

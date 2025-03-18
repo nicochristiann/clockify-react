@@ -5,36 +5,28 @@ import Dates from "../components/Dates";
 import Activity from "../components/Activity";
 import { ActivityContext } from "../context/ActivityProvider";
 import { TimerContext } from "../context/TimerProvider";
-import { UserContext } from "../context/UserProvider";
 import { useNavigate } from "react-router";
 
 const ActivityPage = () => {
-  const { activities, getLatestActivity, getNearbyActivity } =
+  const { activities, getLatestActivity, getNearbyActivity, getAllActivities } =
     useContext(ActivityContext);
   const { timer, getSeconds } = useContext(TimerContext);
   const [sortActivity, setSortActivity] = useState([]);
   const [sortChoice, setSortChoice] = useState("Latest Date");
 
-  const { currUser } = useContext(UserContext);
-  // console.log(currUser);
-  // const navigate = useNavigate();
-
   useEffect(() => {
-    sorted(sortChoice);
-  }, [sortChoice, activities]);
-
-  const sorted = (choice) => {
-    switch (choice) {
-      case "Latest Date":
-        getLatestActivity();
-        break;
-      case "Nearby":
-        getNearbyActivity();
-        break;
-      default:
-        break;
-    }
-  };
+    const fetchData = async () => {
+      let data = [];
+      if (sortChoice === "Latest Date") {
+        data = await getAllActivities();
+        // data = await getLatestActivity();
+      } else if (sortChoice === "Nearby") {
+        data = await getNearbyActivity();
+      }
+      setSortActivity(data);
+    };
+    fetchData();
+  }, [sortChoice]);
 
   const isSameDate = (date1, date2) => {
     return (
