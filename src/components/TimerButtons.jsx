@@ -19,12 +19,14 @@ const TimerButtons = ({
   const { deleteActivity, updateActivity } = useContext(ActivityContext);
   const navigate = useNavigate();
 
+  const { mutate } = deleteActivity;
+
   const remove = () => {
     const confirm = window.confirm(
       "Are you sure you want to delete this activity?"
     );
     if (!confirm) return;
-    deleteActivity(currActivity.id);
+    mutate(currActivity.uuid);
     isEdit && navigate("/activity");
   };
 

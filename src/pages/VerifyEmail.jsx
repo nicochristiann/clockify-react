@@ -11,9 +11,9 @@ function VerifyEmail() {
         const params = new URLSearchParams(location.search);
         const emailToken = params.get("emailToken");
         const res = await fetch(
-          `https://light-master-eagle.ngrok-free.app/api/v1/user/verifyemail?emailToken=${emailToken}`,
+          `https://f20d-103-19-109-29.ngrok-free.app/api/v1/user/verifyemail`,
           {
-            method: "GET",
+            method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ emailToken }),
           }
@@ -34,8 +34,8 @@ function VerifyEmail() {
   }, []);
 
   return (
-    <div className="flex w-full h-full justify-center items-center">
-      <h1>{isVerified}</h1>
+    <div className="flex w-[100vw] h-[100vh] justify-center items-center">
+      <h1 className="text-white text-4xl">{isVerified}</h1>
     </div>
   );
 }

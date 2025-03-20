@@ -46,7 +46,7 @@ const Timer = () => {
     };
     // addActivity(newActivity);
     mutate(newActivity);
-    // navigation("/activity");
+    navigation("/activity");
   };
 
   useEffect(() => {

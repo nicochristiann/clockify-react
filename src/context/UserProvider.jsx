@@ -4,70 +4,52 @@ import Cookie from "js-cookie";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  // const [loading, setLoading] = useState(true);
-  const [currUser, setCurrUser] = useState({
-    uuid: "",
-    email: "",
-  });
-
-  useEffect(() => {
-    const token = Cookie.get("token");
-    const storedUser = localStorage.getItem("currUser");
-
-    if (token && storedUser) {
-      setCurrUser(JSON.parse(storedUser));
-    } else {
-      setCurrUser(null);
-    }
-  }, []);
-
   // Register User
-  const register = async ({ email, password }, setStatus) => {
-    // console.log(newUser);
-    const res = await fetch(
-      "https://light-master-eagle.ngrok-free.app/api/v1/user/register",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      }
-    );
-    const data = await res.json();
-    setStatus(data.status);
+  const register = async ({ email, password, confirmPassword }, setStatus) => {
+    // console.log(newUser);]
+    try {
+      const res = await fetch(
+        "https://f20d-103-19-109-29.ngrok-free.app/api/v1/user/register",
+        // "http://localhost:3000/api/v1/user/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, confirmPassword }),
+        }
+      );
+      const data = await res.json();
+      setStatus(data.status);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
     return;
   };
 
   // Login (set current user)
   const login = async (user) => {
     const res = await fetch(
-      "https://light-master-eagle.ngrok-free.app/api/v1/user/login",
+      "https://f20d-103-19-109-29.ngrok-free.app/api/v1/user/login",
+      // "http://localhost:3000/api/v1/user/login",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
       }
     );
-    // Debugging
-    console.log("Raw Response:", res);
-    console.log("Status Response:", res.status);
-    console.log("Header Response:", res.headers.get("content-type"));
-    // console.log(res);
+    console.log(res);
     const data = await res.json();
-    // console.log(data);
+    console.log(data);
 
     if (!data) return;
 
     // // Simpan token ke cookies (berlaku selama 1 hari)
     Cookie.set("token", data.token, { expires: 1 });
-
-    // Simpan user ke localStorage
-    localStorage.setItem("currUser", JSON.stringify(data.user));
-    setCurrUser(data.user);
   };
 
   const forgotPassword = async (email) => {
     const res = await fetch(
-      "https://light-master-eagle.ngrok-free.app/api/v1/user/forgotpassword",
+      "https://f20d-103-19-109-29.ngrok-free.app/api/v1/user/forgotpassword",
+      // "http://localhost:3000/api/v1/user/forgotpassword",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,7 +62,8 @@ export const UserProvider = ({ children }) => {
 
   const resetPassword = async (resetToken, newPassword, confirmPassword) => {
     const res = await fetch(
-      "https://light-master-eagle.ngrok-free.app/api/v1/user/resetpassword",
+      "https://f20d-103-19-109-29.ngrok-free.app/api/v1/user/resetpassword",
+      // "http://localhost:3000/api/v1/user/resetpassword",
       {
         method: "PATCH",
         headers: {
@@ -97,8 +80,6 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider
       value={{
-        currUser,
-        setCurrUser,
         register,
         login,
         resetPassword,

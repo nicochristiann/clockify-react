@@ -32,8 +32,8 @@ const App = () => {
         </Route>
 
         {/* Halaman yang bisa diakses jika login */}
-        <Route path="/" element={<MainLayout />}>
-          <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<MainLayout />}>
             <Route path="/timer" element={<TimerPage />} />
             <Route path="/activity" element={<ActivityPage />} />
             <Route path="/edit-activity/:id" element={<EditActivityPage />} />

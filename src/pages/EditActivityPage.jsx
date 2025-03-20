@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Locations from "../components/Locations";
 import { ActivityContext } from "../context/ActivityProvider";
-import { useNavigate, useParams } from "react-router";
+import { data, useNavigate, useParams } from "react-router";
 import TimerButtons from "../components/TimerButtons";
 import TextArea from "../components/TextArea";
 import StartEndTime from "../components/StartEndTime";
@@ -13,14 +13,30 @@ const EditActivityPage = () => {
   const { id } = useParams();
 
   // Context
-  const { updateActivity, setCurrActivity, getActivity, currActivity } =
-    useContext(ActivityContext);
+  const { updateActivity, getActivity } = useContext(ActivityContext);
   const { dateFormat, timer, getSeconds } = useContext(TimerContext);
-  const { currUser } = useContext(UserContext);
+  const [currActivity, setCurrActivity] = useState({});
 
   // Get An Activity
   useEffect(() => {
-    getActivity(id);
+    const fetchActivity = async () => {
+      const data = await getActivity(id);
+      if (data) {
+        setTime(getSeconds(data.start_time, data.end_time));
+        setStartTime(timer(data.start_time));
+        setEndTime(timer(data.end_time));
+        setStartDate(dateFormat(data.start_time));
+        setEndDate(dateFormat(data.end_time));
+        setStartDateTime(data.start_time);
+        setEndDateTime(data.end_time);
+        setLatitude(data.location_lat);
+        setLongitude(data.location_lng);
+        setDescription(data.description);
+      }
+      // console.log(data);
+      setCurrActivity(data);
+    };
+    fetchActivity();
   }, [id]);
 
   const [time, setTime] = useState(0);
@@ -34,21 +50,26 @@ const EditActivityPage = () => {
   const [longitude, setLongitude] = useState(null);
   const [description, setDescription] = useState("");
 
+  // Set Current Activity
   useEffect(() => {
-    setTime(getSeconds(currActivity.start_time, currActivity.end_time));
-    setStartTime(timer(currActivity.start_time));
-    setEndTime(timer(currActivity.end_time));
-    setStartDate(dateFormat(currActivity.start_time));
-    setEndDate(dateFormat(currActivity.end_time));
-    setStartDateTime(currActivity.start_time);
-    setEndDateTime(currActivity.end_time);
-    setLatitude(currActivity.location_lat);
-    setLongitude(currActivity.location_lng);
-    setDescription(currActivity.description);
-    // console.log(currActivity);
+    const setEdit = async () => {
+      // console.log(currActivity);
+      setTime(getSeconds(currActivity.start_time, currActivity.end_time));
+      setStartTime(timer(currActivity.start_time));
+      setEndTime(timer(currActivity.end_time));
+      setStartDate(dateFormat(currActivity.start_time));
+      setEndDate(dateFormat(currActivity.end_time));
+      setStartDateTime(currActivity.start_time);
+      setEndDateTime(currActivity.end_time);
+      setLatitude(currActivity.location_lat);
+      setLongitude(currActivity.location_lng);
+      setDescription(currActivity.description);
+    };
+    setEdit();
   }, [currActivity]);
 
   const { mutate } = updateActivity;
+  const navigation = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -64,7 +85,6 @@ const EditActivityPage = () => {
 
     const updatedActivity = {
       uuid: currActivity.uuid,
-      user_uuid: currUser.uuid,
       start_time: startDateTime,
       end_time: endDateTime,
       description: description,

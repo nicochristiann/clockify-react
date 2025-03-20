@@ -8,12 +8,14 @@ const CredentialRoute = () => {
 
   useEffect(() => {
     const savedToken = Cookie.get("token");
-    setToken(savedToken);
+    if (savedToken) {
+      setToken(savedToken);
+    }
     setLoading(false);
-  }, []);
+  }, [token]);
 
   if (loading) return <p>Loading...</p>;
-
+  // console.log(token);
   return token ? <Navigate to="/timer" /> : <Outlet />;
 };
 

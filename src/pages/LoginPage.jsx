@@ -7,17 +7,19 @@ import { useFormik } from "formik";
 import { LoginSchema } from "../schema/UserSchema";
 import { UserContext } from "../context/UserProvider";
 import { useNavigate } from "react-router";
+import Cookies from "js-cookie";
 
 const LoginPage = () => {
-  const { login, currUser } = useContext(UserContext);
+  const { login } = useContext(UserContext);
   const navigate = useNavigate();
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    currUser && navigate("/timer");
-  }, [currUser]);
+    setToken(Cookies.get("token"));
+    token && navigate("/timer");
+  }, []);
 
   const loginUser = (values) => {
-    // console.log(values);
     login(values);
   };
 
@@ -30,7 +32,6 @@ const LoginPage = () => {
     validationSchema: LoginSchema,
   });
 
-  // console.log(errors);
   return (
     <>
       <section>

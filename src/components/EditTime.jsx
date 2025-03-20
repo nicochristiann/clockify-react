@@ -73,7 +73,7 @@ const EditTime = ({
   const setDateTime = () => {
     setCurrActivity((prev) => ({
       ...prev,
-      startTime: new Date(
+      start_time: new Date(
         startYear,
         startMonth - 1,
         startDate,
@@ -81,7 +81,7 @@ const EditTime = ({
         startMinutes,
         startSeconds
       ),
-      endTime: new Date(
+      end_time: new Date(
         endYear,
         endMonth - 1,
         endDate,

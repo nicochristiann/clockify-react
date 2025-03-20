@@ -20,7 +20,6 @@ const Activity = ({ activity, duration, startTime, endTime }) => {
 
     // 0.5s sebelum data terhapus, dikasi animasi
     setTimeout(() => {
-      // deleteActivity(activityId);
       mutate(activityId);
     }, 500);
   };
@@ -40,7 +39,7 @@ const Activity = ({ activity, duration, startTime, endTime }) => {
             : "duration-200 hover:bg-[#192865] hover:-translate-x-[72px]"
         }`}
       >
-        <Link to={`/edit-activity/${activity.id}`}>
+        <Link to={`/edit-activity/${activity.uuid}`}>
           <div className="flex w-[60vw] justify-between px-[1vw] py-3">
             <div>
               <p className="text-lg font-bold text-white">{duration}</p>
@@ -58,7 +57,7 @@ const Activity = ({ activity, duration, startTime, endTime }) => {
               <div className="flex items-center gap-1">
                 <img className="w-3 h-4" src={location} alt="" />
                 <p className="text-sm font-light text-[#A7A6C5]">
-                  {`${activity.latitude}.${activity.longitude}`}
+                  {`${activity.location_lat}.${activity.location_lng}`}
                 </p>
               </div>
             </div>
@@ -66,7 +65,7 @@ const Activity = ({ activity, duration, startTime, endTime }) => {
         </Link>
         <div>
           <button
-            onClick={() => onDeleteClick(activity.id)}
+            onClick={() => onDeleteClick(activity.uuid)}
             className="w-[72px] h-[100%] px-3 bg-red-400 cursor-pointer text-white"
           >
             Delete

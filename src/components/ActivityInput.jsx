@@ -3,16 +3,26 @@ import searchImg from "../assets/Clockify/Search.svg";
 import dropdown from "../assets/Clockify/Dropdown-white.png";
 import { ActivityContext } from "../context/ActivityProvider";
 
-const ActivityInput = ({ sortChoice, setSortChoice }) => {
+const ActivityInput = ({
+  sortChoice,
+  setSortChoice,
+  setIsSearch,
+  sortActivity,
+}) => {
   const [isDown, setIsDown] = useState(false);
-  const { keyword, setKeyword, getSearchActivity } =
-    useContext(ActivityContext);
+  const { keyword, setKeyword } = useContext(ActivityContext);
+
   return (
     <>
       <form className="flex flex-col gap-5 w-[100%]">
         <div className="w-[100%] h-15 flex gap-5">
           {/* Search Activity */}
           <div className="relative w-[70%] h-[100%]">
+            {!sortActivity && (
+              <span className="text-red-600 text-sm absolute -top-6 left-2">
+                No such activity!
+              </span>
+            )}
             <input
               className="focus:outline-none bg-white absolute w-[100%] h-[100%] py-6 pl-4 rounded-xl text-sm lg:text-lg md:text-md"
               type="text"
@@ -24,7 +34,10 @@ const ActivityInput = ({ sortChoice, setSortChoice }) => {
                 setKeyword(e.target.value);
               }}
               onKeyDown={(e) => {
-                e.key === "Enter" && getSearchActivity();
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  setIsSearch(true);
+                }
               }}
             />
             <img
@@ -32,7 +45,7 @@ const ActivityInput = ({ sortChoice, setSortChoice }) => {
               src={searchImg}
               alt=""
               onClick={() => {
-                getSearchActivity();
+                setIsSearch(true);
               }}
             />
           </div>
@@ -74,6 +87,15 @@ const ActivityInput = ({ sortChoice, setSortChoice }) => {
                   }}
                 >
                   Latest Date
+                </li>
+                <li
+                  className="px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-xl"
+                  onClick={() => {
+                    setSortChoice("Oldest Date");
+                    setIsDown(false);
+                  }}
+                >
+                  Oldest Date
                 </li>
                 <li
                   className="px-4 py-2 text-sm lg:text-lg md:text-md hover:bg-gray-200 rounded-xl"

@@ -5,28 +5,44 @@ import Dates from "../components/Dates";
 import Activity from "../components/Activity";
 import { ActivityContext } from "../context/ActivityProvider";
 import { TimerContext } from "../context/TimerProvider";
-import { useNavigate } from "react-router";
 
 const ActivityPage = () => {
-  const { activities, getLatestActivity, getNearbyActivity, getAllActivities } =
-    useContext(ActivityContext);
+  const { getFilterActivities } = useContext(ActivityContext);
   const { timer, getSeconds } = useContext(TimerContext);
   const [sortActivity, setSortActivity] = useState([]);
   const [sortChoice, setSortChoice] = useState("Latest Date");
+  const [isSearch, setIsSearch] = useState(false);
+  const [choice, setChoice] = useState("latestdate");
+
+  useEffect(() => {
+    if (sortChoice === "Latest Date") {
+      setChoice("latestdate");
+    } else if (sortChoice === "Nearby") {
+      setChoice("nearby");
+    } else if (sortChoice === "Oldest Date") {
+      setChoice("oldestdate");
+    }
+  }, [sortChoice]);
 
   useEffect(() => {
     const fetchData = async () => {
-      let data = [];
-      if (sortChoice === "Latest Date") {
-        data = await getAllActivities();
-        // data = await getLatestActivity();
-      } else if (sortChoice === "Nearby") {
-        data = await getNearbyActivity();
-      }
+      if (!isSearch) return;
+      // console.log(choice);
+      const data = await getFilterActivities(choice);
+      data && setSortActivity(data);
+      setIsSearch(false);
+    };
+    fetchData();
+  }, [isSearch]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getFilterActivities(choice);
+      // console.log(data);
       setSortActivity(data);
     };
     fetchData();
-  }, [sortChoice]);
+  }, [choice]);
 
   const isSameDate = (date1, date2) => {
     return (
@@ -41,7 +57,7 @@ const ActivityPage = () => {
       return true;
     } else if (
       index !== 0 &&
-      !isSameDate(activity.startTime, array[index - 1].startTime)
+      !isSameDate(activity.start_time, array[index - 1].start_time)
     ) {
       return true;
     } else {
@@ -59,6 +75,8 @@ const ActivityPage = () => {
               <ActivityInput
                 sortChoice={sortChoice}
                 setSortChoice={setSortChoice}
+                setIsSearch={setIsSearch}
+                sortActivity={sortActivity}
               />
             </div>
 
@@ -69,25 +87,25 @@ const ActivityPage = () => {
               {/* Activities on current Date */}
               <div className="flex flex-col">
                 {sortActivity.map((activity, index, array) => (
-                  <div key={activity.id}>
+                  <div key={activity.uuid}>
                     {showDate(activity, index, array) && (
-                      <Dates createdDate={activity.startTime} />
+                      <Dates createdDate={activity.start_time} />
                     )}
 
                     <Activity
-                      key={activity.id}
+                      key={activity.uuid}
                       activity={activity}
                       duration={getSeconds(
-                        activity.startTime,
-                        activity.endTime
+                        activity.start_time,
+                        activity.end_time
                       )}
-                      startTime={timer(activity.startTime)}
-                      endTime={timer(activity.endTime)}
+                      startTime={timer(activity.start_time)}
+                      endTime={timer(activity.end_time)}
                     />
                     {index < array.length - 1 &&
                       isSameDate(
-                        activity.startTime,
-                        array[index + 1].startTime
+                        activity.start_time,
+                        array[index + 1].start_time
                       ) && <Line />}
                   </div>
                 ))}
