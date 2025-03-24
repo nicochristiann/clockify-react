@@ -1,23 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import locationImg from "../assets/Clockify/Placeholder-big.svg";
 
-const Locations = ({
-  latitude,
-  setLatitude,
-  longitude,
-  setLongitude,
-  isEdit,
-}) => {
-  !isEdit &&
-    useEffect(() => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-        });
-      }
-    }, [latitude, longitude]);
-
+const Locations = ({ latitude, longitude }) => {
   return (
     <div className="relative flex flex-row items-center w-[100%]">
       <img src={locationImg} alt="" className="ml-5" />

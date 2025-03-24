@@ -12,10 +12,9 @@ const ProtectedRoute = () => {
       setToken(savedToken);
     }
     setLoading(false);
-  }, [token]);
+  }, []);
 
   if (loading) return <p>Loading...</p>;
-  // console.log(token);
   return token ? <Outlet /> : <Navigate to="/login" />;
 };
 

@@ -5,14 +5,16 @@ import PasswordBox from "../components/PasswordBox";
 import { PasswordSchema } from "../schema/UserSchema";
 import { UserContext } from "../context/UserProvider";
 import { useNavigate, useLocation } from "react-router";
+import { resetPassword } from "../services/UserApi";
 
 const ResetPasswordPage = () => {
   const location = useLocation();
+
   // Extract the reset token from URL query parameter "resetToken"
   const queryParams = new URLSearchParams(location.search);
   const resetToken = queryParams.get("resetToken");
 
-  const { resetPassword } = useContext(UserContext);
+  // const { resetPassword } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {

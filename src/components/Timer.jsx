@@ -6,6 +6,8 @@ import TimerButtons from "./TimerButtons";
 import TextArea from "./TextArea";
 import StartEndTime from "./StartEndTime";
 import { TimerContext } from "../context/TimerProvider";
+import { addActivity } from "../services/ActivityApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Timer = () => {
   const [time, setTime] = useState(0);
@@ -22,11 +24,17 @@ const Timer = () => {
   const timeId = useRef();
 
   // Context
-  const { addActivity, latitude, longitude, setLatitude, setLongitude } =
-    useContext(ActivityContext);
+  // const { addActivity, latitude, longitude } = useContext(ActivityContext);
+  const { latitude, longitude } = useContext(ActivityContext);
   const { timerFormat, dateFormat, timer } = useContext(TimerContext);
 
-  const { mutate } = addActivity;
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: addActivity,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["activity"]);
+    },
+  });
 
   const navigation = useNavigate();
 
@@ -115,13 +123,7 @@ const Timer = () => {
             </div>
             {/* Location */}
             <div className="w-[350px] h-13 flex flex-col items-center justify-center bg-[#434B8C] rounded-xl shadow-md p-4 mb-10">
-              <Locations
-                longitude={longitude}
-                setLongitude={setLongitude}
-                latitude={latitude}
-                setLatitude={setLatitude}
-                isEdit={false}
-              />
+              <Locations longitude={longitude} latitude={latitude} />
             </div>
 
             {/* Text Area */}

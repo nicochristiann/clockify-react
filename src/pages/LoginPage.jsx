@@ -1,26 +1,33 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/Clockify/Logo.png";
 import { Link } from "react-router";
 import PasswordBox from "../components/PasswordBox";
 import EmailBox from "../components/EmailBox";
 import { useFormik } from "formik";
 import { LoginSchema } from "../schema/UserSchema";
-import { UserContext } from "../context/UserProvider";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
+import { login } from "../services/UserApi";
 
 const LoginPage = () => {
-  const { login } = useContext(UserContext);
   const navigate = useNavigate();
   const [token, setToken] = useState(null);
+  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setToken(Cookies.get("token"));
     token && navigate("/timer");
-  }, []);
+  }, [token]);
 
-  const loginUser = (values) => {
-    login(values);
+  const handleLogin = async (values) => {
+    const [errorMessage, res] = await login(values);
+    if (res) {
+      navigate("/timer");
+    } else {
+      setError(errorMessage);
+      setIsError(true);
+    }
   };
 
   const { values, errors, handleChange, handleBlur, handleSubmit } = useFormik({
@@ -28,7 +35,7 @@ const LoginPage = () => {
       email: "",
       password: "",
     },
-    onSubmit: loginUser,
+    onSubmit: handleLogin,
     validationSchema: LoginSchema,
   });
 
@@ -81,13 +88,11 @@ const LoginPage = () => {
 
                 {/* Sign In & Create */}
                 <div className="flex flex-col items-center gap-1">
-                  {/* {currUser.length === 0 && (
+                  {isError && (
                     <div className="flex items-center justify-center">
-                      <span className="text-red-400 font-thin">
-                        User Not Found!
-                      </span>
+                      <span className="text-red-400 font-thin">{error}</span>
                     </div>
-                  )} */}
+                  )}
                   <button
                     className="bg-[#2EBED9] px-37 py-4 rounded-xl text-white cursor-pointer mb-5"
                     type="submit"

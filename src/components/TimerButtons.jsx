@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { ActivityContext } from "../context/ActivityProvider";
 import { useNavigate } from "react-router";
+import { deleteActivity } from "../services/ActivityApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const TimerButtons = ({
   text,
@@ -16,10 +18,15 @@ const TimerButtons = ({
   const buttonWhite =
     "bg-white w-40 py-3 rounded-xl text-[#A7A6C5] cursor-pointer";
 
-  const { deleteActivity, updateActivity } = useContext(ActivityContext);
   const navigate = useNavigate();
 
-  const { mutate } = deleteActivity;
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: deleteActivity,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["activity"]);
+    },
+  });
 
   const remove = () => {
     const confirm = window.confirm(

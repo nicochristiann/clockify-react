@@ -3,14 +3,9 @@ import searchImg from "../assets/Clockify/Search.svg";
 import dropdown from "../assets/Clockify/Dropdown-white.png";
 import { ActivityContext } from "../context/ActivityProvider";
 
-const ActivityInput = ({
-  sortChoice,
-  setSortChoice,
-  setIsSearch,
-  sortActivity,
-}) => {
+const ActivityInput = ({ sortChoice, setSortChoice, setIsSearch }) => {
   const [isDown, setIsDown] = useState(false);
-  const { keyword, setKeyword } = useContext(ActivityContext);
+  const { keyword, setKeyword, activities } = useContext(ActivityContext);
 
   return (
     <>
@@ -18,11 +13,6 @@ const ActivityInput = ({
         <div className="w-[100%] h-15 flex gap-5">
           {/* Search Activity */}
           <div className="relative w-[70%] h-[100%]">
-            {!sortActivity && (
-              <span className="text-red-600 text-sm absolute -top-6 left-2">
-                No such activity!
-              </span>
-            )}
             <input
               className="focus:outline-none bg-white absolute w-[100%] h-[100%] py-6 pl-4 rounded-xl text-sm lg:text-lg md:text-md"
               type="text"

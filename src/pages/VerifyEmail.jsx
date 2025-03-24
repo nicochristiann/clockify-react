@@ -11,7 +11,7 @@ function VerifyEmail() {
         const params = new URLSearchParams(location.search);
         const emailToken = params.get("emailToken");
         const res = await fetch(
-          `https://f20d-103-19-109-29.ngrok-free.app/api/v1/user/verifyemail`,
+          `https://clocklify-api.onrender.com/api/v1/user/verifyemail`,
           {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },

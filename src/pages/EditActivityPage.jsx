@@ -1,19 +1,21 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Locations from "../components/Locations";
 import { ActivityContext } from "../context/ActivityProvider";
-import { data, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import TimerButtons from "../components/TimerButtons";
 import TextArea from "../components/TextArea";
 import StartEndTime from "../components/StartEndTime";
 import { TimerContext } from "../context/TimerProvider";
 import EditTime from "../components/EditTime";
-import { UserContext } from "../context/UserProvider";
+import { updateActivity } from "../services/ActivityApi";
+import { getActivity } from "../services/ActivityApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const EditActivityPage = () => {
   const { id } = useParams();
 
   // Context
-  const { updateActivity, getActivity } = useContext(ActivityContext);
+  // const { updateActivity, getActivity } = useContext(ActivityContext);
   const { dateFormat, timer, getSeconds } = useContext(TimerContext);
   const [currActivity, setCurrActivity] = useState({});
 
@@ -33,7 +35,6 @@ const EditActivityPage = () => {
         setLongitude(data.location_lng);
         setDescription(data.description);
       }
-      // console.log(data);
       setCurrActivity(data);
     };
     fetchActivity();
@@ -53,7 +54,6 @@ const EditActivityPage = () => {
   // Set Current Activity
   useEffect(() => {
     const setEdit = async () => {
-      // console.log(currActivity);
       setTime(getSeconds(currActivity.start_time, currActivity.end_time));
       setStartTime(timer(currActivity.start_time));
       setEndTime(timer(currActivity.end_time));
@@ -68,7 +68,14 @@ const EditActivityPage = () => {
     setEdit();
   }, [currActivity]);
 
-  const { mutate } = updateActivity;
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: updateActivity,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["activity"]);
+    },
+  });
+
   const navigation = useNavigate();
 
   const handleSubmit = (e) => {
@@ -93,8 +100,6 @@ const EditActivityPage = () => {
       created_at: currActivity.created_at,
       updatedAt: new Date(),
     };
-    // console.log(updateActivity);
-    // updateActivity(updatedActivity);
     mutate(updatedActivity);
     navigation("/activity");
   };
@@ -148,13 +153,7 @@ const EditActivityPage = () => {
             </div>
             {/* Location */}
             <div className="w-[350px] h-13 flex flex-col items-center justify-center bg-[#434B8C] rounded-xl shadow-md p-4 mb-10">
-              <Locations
-                latitude={latitude}
-                setLatitude={setLatitude}
-                longitude={longitude}
-                setLongitude={setLongitude}
-                isEdit={true}
-              />
+              <Locations latitude={latitude} longitude={longitude} />
             </div>
 
             {/* Text Area */}

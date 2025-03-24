@@ -5,23 +5,29 @@ import EmailBox from "../components/EmailBox";
 import RegisterSuccess from "../components/RegisterSuccess";
 import { useFormik } from "formik";
 import { RegisterSchema } from "../schema/UserSchema";
-import { UserContext } from "../context/UserProvider";
+import { register } from "../services/UserApi";
 
 const RegisterPage = () => {
-  const { register } = useContext(UserContext);
   const [status, setStatus] = useState("");
-
-  const handleRegister = (e) => {
-    register(values, setStatus);
-  };
+  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState("");
+  const [isRegister, setIsRegister] = useState(false);
 
   useEffect(() => {
     if (status === "success") {
       setTimeout(() => {
         setIsRegister(true);
-      }, 1000);
+      }, 600);
     }
   }, [status]);
+
+  const handleRegister = async (values) => {
+    const [errorMessage, res] = await register(values, setStatus);
+    if (!res) {
+      setError(errorMessage);
+      setIsError(true);
+    }
+  };
 
   const { values, errors, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues: {
@@ -32,10 +38,6 @@ const RegisterPage = () => {
     onSubmit: handleRegister,
     validationSchema: RegisterSchema,
   });
-
-  // console.log(errors);
-
-  const [isRegister, setIsRegister] = useState(false);
 
   return (
     <>
@@ -101,6 +103,11 @@ const RegisterPage = () => {
                 </div>
 
                 <div className="flex flex-col items-center gap-5 mt-10">
+                  {isError && (
+                    <div className="flex items-center justify-center">
+                      <span className="text-red-400 font-thin">{error}</span>
+                    </div>
+                  )}
                   <button
                     type="submit"
                     className="bg-[#2EBED9] px-20 py-3 rounded-xl text-white cursor-pointer"

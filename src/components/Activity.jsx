@@ -3,12 +3,19 @@ import clock from "../assets/Clockify/clock.png";
 import location from "../assets/Clockify/placeholder.png";
 import { ActivityContext } from "../context/ActivityProvider";
 import { Link } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteActivity } from "../services/ActivityApi";
 
 const Activity = ({ activity, duration, startTime, endTime }) => {
-  const { deleteActivity } = useContext(ActivityContext);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { mutate } = deleteActivity;
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: deleteActivity,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["activity"]);
+    },
+  });
 
   const onDeleteClick = (activityId) => {
     const confirm = window.confirm(

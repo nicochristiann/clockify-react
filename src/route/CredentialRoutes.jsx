@@ -12,10 +12,9 @@ const CredentialRoute = () => {
       setToken(savedToken);
     }
     setLoading(false);
-  }, [token]);
+  }, []);
 
   if (loading) return <p>Loading...</p>;
-  // console.log(token);
   return token ? <Navigate to="/timer" /> : <Outlet />;
 };
 

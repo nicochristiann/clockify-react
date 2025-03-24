@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import EmailBox from "../components/EmailBox";
 import { useFormik } from "formik";
 import logo from "../assets/Clockify/Logo.png";
 import { EmailSchema } from "../schema/UserSchema";
-import { UserContext } from "../context/UserProvider";
+import { forgotPassword } from "../services/UserApi";
 
 const ForgotPasswordPage = () => {
-  const { forgotPassword } = useContext(UserContext);
+  const [isSent, setIsSent] = useState(false);
+
   const handleEmail = () => {
-    console.log(values.email);
     forgotPassword(values.email);
   };
 
@@ -42,9 +42,21 @@ const ForgotPasswordPage = () => {
                 </label>
               </div>
               <div className="flex flex-col items-center gap-1">
+                {isSent && (
+                  <div className="flex items-center justify-center">
+                    <span className="text-green-600 font-thin">
+                      Please check you email to verify your account!
+                    </span>
+                  </div>
+                )}
                 <button
                   className="bg-[#2EBED9] px-37 py-4 rounded-xl text-white cursor-pointer"
                   type="submit"
+                  onClick={() =>
+                    setTimeout(() => {
+                      setIsSent(true);
+                    }, 500)
+                  }
                 >
                   VERIFY EMAIL
                 </button>
