@@ -1,9 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/Clockify/Logo.png";
 import { useFormik } from "formik";
 import PasswordBox from "../components/PasswordBox";
 import { PasswordSchema } from "../schema/UserSchema";
-import { UserContext } from "../context/UserProvider";
 import { useNavigate, useLocation } from "react-router";
 import { resetPassword } from "../services/UserApi";
 
