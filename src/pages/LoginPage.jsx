@@ -6,19 +6,12 @@ import EmailBox from "../components/EmailBox";
 import { useFormik } from "formik";
 import { LoginSchema } from "../schema/UserSchema";
 import { useNavigate } from "react-router";
-import Cookies from "js-cookie";
 import { login } from "../services/UserApi";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [token, setToken] = useState(null);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    setToken(Cookies.get("token"));
-    token && navigate("/timer");
-  }, [token]);
 
   const handleLogin = async (values) => {
     const [errorMessage, res] = await login(values);

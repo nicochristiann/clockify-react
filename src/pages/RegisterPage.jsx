@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/Clockify/Logo.png";
 import PasswordBox from "../components/PasswordBox";
 import EmailBox from "../components/EmailBox";

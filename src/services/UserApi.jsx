@@ -47,6 +47,24 @@ export const register = async (
   return ["", response];
 };
 
+export const verifyEmail = async (location, setIsVerified) => {
+  const params = new URLSearchParams(location.search);
+  const emailToken = params.get("emailToken");
+  const res = await fetch(
+    `https://clocklify-api.onrender.com/api/v1/user/verifyemail`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ emailToken }),
+    }
+  );
+  const data = await res.json();
+
+  if (data.status === "success") {
+    setIsVerified("Your Email Has Been Verified!");
+  }
+};
+
 export const forgotPassword = async (email) => {
   const res = await fetch(
     "https://clocklify-api.onrender.com/api/v1/user/forgotpassword",

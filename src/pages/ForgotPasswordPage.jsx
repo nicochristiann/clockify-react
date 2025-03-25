@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import EmailBox from "../components/EmailBox";
 import { useFormik } from "formik";
 import logo from "../assets/Clockify/Logo.png";

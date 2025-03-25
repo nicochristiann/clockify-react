@@ -13,7 +13,6 @@ const ResetPasswordPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const resetToken = queryParams.get("resetToken");
 
-  // const { resetPassword } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,7 +20,6 @@ const ResetPasswordPage = () => {
   }, []);
 
   const handleReset = (values) => {
-    // console.log(resetToken, values.password, values.confirmpassword);
     resetPassword(resetToken, values.password, values.confirmPassword);
     if (!errors) navigate("/login");
   };

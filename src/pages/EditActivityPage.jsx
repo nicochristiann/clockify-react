@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Locations from "../components/Locations";
-import { ActivityContext } from "../context/ActivityProvider";
 import { useNavigate, useParams } from "react-router";
 import TimerButtons from "../components/TimerButtons";
 import TextArea from "../components/TextArea";
@@ -13,9 +12,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const EditActivityPage = () => {
   const { id } = useParams();
-
-  // Context
-  // const { updateActivity, getActivity } = useContext(ActivityContext);
   const { dateFormat, timer, getSeconds } = useContext(TimerContext);
   const [currActivity, setCurrActivity] = useState({});
 
@@ -23,18 +19,6 @@ const EditActivityPage = () => {
   useEffect(() => {
     const fetchActivity = async () => {
       const data = await getActivity(id);
-      if (data) {
-        setTime(getSeconds(data.start_time, data.end_time));
-        setStartTime(timer(data.start_time));
-        setEndTime(timer(data.end_time));
-        setStartDate(dateFormat(data.start_time));
-        setEndDate(dateFormat(data.end_time));
-        setStartDateTime(data.start_time);
-        setEndDateTime(data.end_time);
-        setLatitude(data.location_lat);
-        setLongitude(data.location_lng);
-        setDescription(data.description);
-      }
       setCurrActivity(data);
     };
     fetchActivity();
@@ -77,7 +61,6 @@ const EditActivityPage = () => {
   });
 
   const navigation = useNavigate();
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (description === "") {
